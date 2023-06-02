@@ -105,7 +105,7 @@ SELECT Patient_id, Max(amountDue) FROM MedicalBill
 	GROUP BY Patient_id;
     
 SELECT id, MIN(cost) FROM Lab
-	GROUP BY id HAVING MIN(cost) > 51;
+	GROUP BY id HAVING MIN(cost) < 51;
 SELECT id, MAX(cost) FROM Lab
 	GROUP BY id HAVING MAX(cost) > 50;
 SELECT id, SUM(cost) FROM Lab

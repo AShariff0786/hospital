@@ -1,16 +1,16 @@
 CREATE DATABASE hospital1;
 CREATE TABLE IF NOT EXISTS `hospital1`.`Departments` (
-  id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  name VARCHAR(45) NOT NULL);
+  `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL);
 
 CREATE TABLE IF NOT EXISTS `hospital1`.`Doctor` (
-  employeeId INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  name VARCHAR(45) NOT NULL,
-  position VARCHAR(45),
-  Departments_id INT NOT NULL,
+  `employeeId` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `position` VARCHAR(45),
+  `Departments_id` INT NOT NULL,
     FOREIGN KEY (`Departments_id`) REFERENCES `hospital1`.`Departments` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
 
 CREATE TABLE IF NOT EXISTS `hospital1`.`PatientMedicalChart` (
   `reportId` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -23,8 +23,8 @@ CREATE TABLE IF NOT EXISTS `hospital1`.`Nurse` (
   `position` VARCHAR(45),
   `Departments_id` INT NOT NULL,
     FOREIGN KEY (`Departments_id`) REFERENCES `hospital`.`Departments` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
 
 
 CREATE TABLE IF NOT EXISTS `hospital1`.`Insurance` (
@@ -77,8 +77,8 @@ CREATE TABLE IF NOT EXISTS `hospital1`.`Appointment` (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
     FOREIGN KEY (`Nurse_employeeId`) REFERENCES `hospital1`.`Nurse` (`employeeId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
 
 
 CREATE TABLE IF NOT EXISTS `hospital1`.`Lab` (
@@ -111,30 +111,56 @@ CREATE TABLE IF NOT EXISTS `hospital1`.`Symptom` (
   `name` VARCHAR(45) NULL);
 
 CREATE TABLE IF NOT EXISTS `hospital1`.`PatientMedicalChart_has_Symptoms` (
-  `id` INT PRIMARY KEY NOT NULL,
   `PatientMedicalChart_reportId` INT NOT NULL,
   `Symptoms_id` INT NOT NULL,
   `Start_Date` DATE,
   `End_Date` DATE,
+	PRIMARY KEY ( `PatientMedicalChart_reportId`,  `Symptoms_id`),
     FOREIGN KEY (`PatientMedicalChart_reportId`) REFERENCES `hospital1`.`PatientMedicalChart` (`reportId`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
     FOREIGN KEY (`Symptoms_id`) REFERENCES `hospital1`.`Symptom` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
 CREATE TABLE IF NOT EXISTS `hospital1`.`MedicationPrescription` (
-  `id` INT PRIMARY KEY NOT NULL,
   `Medication_id` INT NOT NULL,
   `PatientMedicalChart_reportId` INT NOT NULL,
   `Dosage` INT,
   `Number_Refills` INT,
+	PRIMARY KEY (`Medication_id`, `PatientMedicalChart_reportId`),
     FOREIGN KEY (`Medication_id`) REFERENCES `hospital1`.`Medication` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
     FOREIGN KEY (`PatientMedicalChart_reportId`) REFERENCES `hospital1`.`PatientMedicalChart` (`reportId`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE);
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+    
+CREATE TABLE IF NOT EXISTS `hospital1`.`LabData` (
+  `MedicalBill_id` INT NOT NULL,
+  `Lab_id` INT NOT NULL,
+  `testResult` LONGTEXT,
+  `date` DATE,
+  PRIMARY KEY (`MedicalBill_id`, `Lab_id`),
+    FOREIGN KEY (`MedicalBill_id`) REFERENCES `hospital1`.`MedicalBill` (`id`)
+     ON DELETE NO ACTION
+     ON UPDATE NO ACTION,
+    FOREIGN KEY (`Lab_id`) REFERENCES `hospital1`.`Lab` (`id`)
+     ON DELETE NO ACTION
+     ON UPDATE NO ACTION);
+     
+CREATE TABLE IF NOT EXISTS `hospital1`.`TreatmentData` (
+  `MedicalBill_id` INT NOT NULL,
+  `Treatment_id` INT NOT NULL,
+  `Start_Date` DATE,
+  `End_Date` DATE,
+  PRIMARY KEY (`MedicalBill_id`, `Treatment_id`),
+    FOREIGN KEY (`MedicalBill_id`) REFERENCES `hospital1`.`MedicalBill` (`id`)
+     ON DELETE NO ACTION
+     ON UPDATE NO ACTION,
+    FOREIGN KEY (`Treatment_id`) REFERENCES `hospital1`.`Treatment` (`id`)
+     ON DELETE NO ACTION
+     ON UPDATE NO ACTION);
     
 USE hospital1;
 
@@ -149,9 +175,9 @@ INSERT INTO Lab VALUES (1, "Bloodwork", 432.00 );
 INSERT INTO Treatment VALUES (1, "Surgery", 108.00 );
 INSERT INTO MedicalBill VALUES (1, 813.00, 1, 1, 1, 1 );
 INSERT INTO Medication VALUES (1, "Lisinopril", "Zestril");
-INSERT INTO MedicationPrescription VALUES (1, 1, 1, 8, 3);
+INSERT INTO MedicationPrescription VALUES ( 1, 1, 8, 3);
 INSERT INTO Symptom VALUES (1, "Fever");
-INSERT INTO PatientMedicalChart_Has_Symptoms VALUES (1, 1, 1, "2023-06-21", "2023-06-12");
+INSERT INTO PatientMedicalChart_Has_Symptoms VALUES ( 1, 1, "2023-06-21", "2023-06-12");
 
 INSERT INTO Departments VALUES (2, "Cardiology");
 INSERT INTO Doctor VALUES (2,"John" , "Physician" ,  2);
@@ -163,8 +189,9 @@ INSERT INTO Appointment VALUES (2,"2023-01-01", "12:00", 2, 2, 2 );
 INSERT INTO Lab VALUES (2, "Bloodwork", 432.00);
 INSERT INTO Lab VALUES (4, "HBL Test", 1221.00 );
 INSERT INTO Lab VALUES (3, "HBL Test", 1221.00 );
+INSERT INTO Lab VALUES (5, "Choloesterol Test", 20.50 );
 INSERT INTO MedicalBill VALUES (2, 813.00, 2, 1, 1, 1 );
-INSERT INTO MedicalBill VALUES (5, 10.00, 1, 1, 1, 1 );
+INSERT INTO MedicalBill VALUES (4, 10.00, 1, 1, 1, 1 );
 INSERT INTO MedicalBill VALUES (3, 1211.00, 3, 1, 1, 1 );
 INSERT INTO Medication VALUES (2, "Lisinopril", "Zestril");
 INSERT INTO Symptom VALUES (2, "Fever");
