@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<nurses>
+    <nurse employeeId="4">
+        <name>Gabriela</name>
+        <position>Registered Nurse</position>
+        <department id="2">
+            <depName>Radiology</depName>
+        </department>
+    </nurse>
+    <nurse employeeId="5">
+        <name>Heather</name>
+        <position>Assistant</position>
+        <department id="2">
+            <depName>Radiology</depName>
+        </department>
+    </nurse>
+</nurses>

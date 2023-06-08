@@ -37,13 +37,13 @@ SELECT * FROM Patient
     JOIN Departments ON Patient.Doctor_employeeId = Doctor.employeeId AND Doctor.Departments_id = Departments.id
     JOIN MedicationPrescription ON MedicationPrescription.PatientMedicalChart_reportId = patientmedicalchart.reportId
     JOIN Medication ON MedicationPrescription.Medication_id = medication.id
-	JOIN patientmedicalchart_has_symptoms ON patientmedicalchart_has_symptoms.PatientMedicalChart_reportId = patientmedicalchart.reportId
-    JOIN Symptom ON patientmedicalchart_has_symptoms.Symptoms_id = symptom.id
+	JOIN SymptomInformation ON SymptomInformation.PatientMedicalChart_reportId = patientmedicalchart.reportId
+    JOIN Symptom ON SymptomInformation.Symptoms_id = symptom.id
     JOIN Treatment ON MedicalBill.Insurance_id = Treatment.id;
 
 SELECT * FROM appointment, departments, doctor, insurance, lab, medicalbill, medication,
 		MedicationPrescription, nurse, patient, patientmedicalchart, 
-        patientmedicalchart_has_symptoms, symptom, treatment;
+        SymptomInformation, symptom, treatment;
         
 SELECT * FROM Patient P
 	LEFT JOIN Doctor D ON P.Doctor_employeeId = D.employeeID;

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="patients">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="patient" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="name" type="xs:string" />
+                            <xs:element name="address" type="xs:string" />
+                            <xs:element name="phoneNumber" type="xs:string" />
+                            <xs:element name="doctor">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="docName" type="xs:string"/>
+                                        <xs:element name="docPosition" type="xs:string"/>
+                                        <xs:element name="docDepartment">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="docDepartmentName" type="xs:string"/>
+                                                </xs:sequence>
+                                                <xs:attribute name="id" type="xs:int"/>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                    <xs:attribute name="employeeId" type="xs:int"/>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="patientMedicalChart">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="diagnosis" type="xs:string" />
+                                        <xs:element name="dateVisited" type="xs:date" />
+                                    </xs:sequence>
+                                    <xs:attribute name="reportId" type="xs:int"/>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="nurse">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="nurseName" type="xs:string"/>
+                                        <xs:element name="nursePosition" type="xs:string"/>
+                                        <xs:element name="nurseDepartment">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="nurseDepartmentName" type="xs:string"/>
+                                                </xs:sequence>
+                                                <xs:attribute name="id" type="xs:int"/>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                    <xs:attribute name="employeeId" type="xs:int"/>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="insurance">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="insuranceName" type="xs:string" />
+                                    </xs:sequence>
+                                    <xs:attribute name="id" type="xs:int"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="id" type="xs:int"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS `hospital1`.`Symptom` (
   `id` INT PRIMARY KEY NOT NULL,
   `name` VARCHAR(45) NULL);
 
-CREATE TABLE IF NOT EXISTS `hospital1`.`PatientMedicalChart_has_Symptoms` (
+CREATE TABLE IF NOT EXISTS `hospital1`.`SymptomInformation` (
   `PatientMedicalChart_reportId` INT NOT NULL,
   `Symptoms_id` INT NOT NULL,
   `Start_Date` DATE,
@@ -177,7 +177,7 @@ INSERT INTO MedicalBill VALUES (1, 813.00, 1, 1, 1, 1 );
 INSERT INTO Medication VALUES (1, "Lisinopril", "Zestril");
 INSERT INTO MedicationPrescription VALUES ( 1, 1, 8, 3);
 INSERT INTO Symptom VALUES (1, "Fever");
-INSERT INTO PatientMedicalChart_Has_Symptoms VALUES ( 1, 1, "2023-06-21", "2023-06-12");
+INSERT INTO SymptomInformation VALUES ( 1, 1, "2023-06-21", "2023-06-12");
 
 INSERT INTO Departments VALUES (2, "Cardiology");
 INSERT INTO Doctor VALUES (2,"John" , "Physician" ,  2);

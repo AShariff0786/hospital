@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<doctors>
+    <doctor employeeId="4">
+        <name>Jimmy</name>
+        <position>Physical Therapist</position>
+        <department id="1">
+            <depName>Cardiology</depName>
+        </department>
+    </doctor>
+    <doctor employeeId="5">
+        <name>Steve</name>
+        <position>Surgeon</position>
+        <department id="1">
+            <depName>Cardiology</depName>
+        </department>
+    </doctor>
+</doctors>
