@@ -2,12 +2,19 @@ package com.solvd.hospital.model;
 
 import com.solvd.hospital.model.patient.Patient;
 
+import javax.xml.bind.annotation.*;
 import java.util.List;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement (name= "nurse")
 public class Nurse extends User{
+    @XmlElement(name = "position")
     private String position;
+    @XmlElement (name = "department")
     private Department department;
+    @XmlTransient
     private List<Patient> patients;
+    @XmlTransient
     private List<Appointment> appointments;
 
     public Nurse(){}
@@ -22,6 +29,7 @@ public class Nurse extends User{
     public void setPosition(String position) {
         this.position = position;
     }
+
 
     public Department getDepartment() {
         return department;

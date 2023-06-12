@@ -10,7 +10,7 @@ public class PropertiesUtil {
     public static Properties getProperties(){
         Properties properties = new Properties();
         try {
-            InputStream input = new FileInputStream("src/main/resources/properties");
+            InputStream input = new FileInputStream("src/main/resources/db.properties");
             properties.load(input);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);

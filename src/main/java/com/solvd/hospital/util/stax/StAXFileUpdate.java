@@ -1,6 +1,5 @@
 package com.solvd.hospital.util.stax;
 
-import com.solvd.hospital.Main;
 import com.solvd.hospital.model.Doctor;
 import com.solvd.hospital.model.Nurse;
 import com.solvd.hospital.model.patient.Patient;

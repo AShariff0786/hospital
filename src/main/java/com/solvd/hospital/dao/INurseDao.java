@@ -1,4 +1,4 @@
-package com.solvd.hospital.dao.impl;
+package com.solvd.hospital.dao;
 
 import com.solvd.hospital.model.Nurse;
 

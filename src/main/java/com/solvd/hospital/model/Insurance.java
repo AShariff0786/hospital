@@ -1,7 +1,13 @@
 package com.solvd.hospital.model;
 
+import javax.xml.bind.annotation.*;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement (name = "insurance")
 public class Insurance {
+    @XmlAttribute
     private int id;
+    @XmlElement (name = "name")
     private String name;
 
     public Insurance(){}

@@ -1,9 +1,14 @@
 package com.solvd.hospital.model.patient;
 
+import javax.xml.bind.annotation.*;
 import java.util.Date;
 
+@XmlAccessorType (XmlAccessType.FIELD)
+@XmlRootElement(name = "patientMedicalChart")
 public class PatientMedicalChart {
+    @XmlAttribute
     private int id;
+    @XmlElement(name = "diagnosis")
     private String diagnosis;
 
     private Date date;

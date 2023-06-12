@@ -1,8 +1,15 @@
 package com.solvd.hospital.model;
 
+import javax.xml.bind.annotation.*;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement (name = "treatment")
 public class Treatment {
+    @XmlAttribute
     private int id;
+    @XmlElement (name = "name")
     private String name;
+    @XmlElement (name = "cost")
     private double cost;
 
     public Treatment(){}

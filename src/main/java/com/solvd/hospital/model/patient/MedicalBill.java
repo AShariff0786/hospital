@@ -1,12 +1,23 @@
 package com.solvd.hospital.model.patient;
 
 import com.solvd.hospital.model.Insurance;
+import com.solvd.hospital.model.Lab;
+import com.solvd.hospital.model.Treatment;
 
+import javax.xml.bind.annotation.*;
+
+@XmlRootElement(name = "medicalBill")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class MedicalBill {
+    @XmlAttribute (name = "id" )
     private int id;
+    @XmlElement (name = "amountDue")
     private double amountDue;
+    @XmlElement (name = "patient")
     private Patient patient;
+    @XmlElement (name = "insurance")
     private Insurance insurance;
+
 
     public MedicalBill(){}
     public MedicalBill(int id){
@@ -44,4 +55,5 @@ public class MedicalBill {
     public void setInsurance(Insurance insurance) {
         this.insurance = insurance;
     }
+
 }

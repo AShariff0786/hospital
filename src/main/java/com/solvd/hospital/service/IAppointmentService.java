@@ -1,4 +1,4 @@
-package com.solvd.hospital.service.impl;
+package com.solvd.hospital.service;
 
 import com.solvd.hospital.model.Appointment;
 import com.solvd.hospital.model.Doctor;

@@ -1,4 +1,4 @@
-package com.solvd.hospital.dao.impl;
+package com.solvd.hospital.dao;
 
 public interface IDao<T> {
     void insert (T t);

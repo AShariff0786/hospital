@@ -34,12 +34,10 @@ public class StaXPatientParser {
         Nurse nurse = new Nurse();
         PatientMedicalChart pmc = new PatientMedicalChart();
         Insurance insurance = new Insurance();
-        FileInputStream input = null;
         XMLEventReader reader = null;
 
 
-        try {
-            input = new FileInputStream("src/main/resources/xml/patients.xml");
+        try (FileInputStream input = new FileInputStream("src/main/resources/xml/patients.xml");) {
             reader = XMLInputFactory.newInstance().createXMLEventReader(input);
             Patient patient = null;
             while(reader.hasNext()){
@@ -56,15 +54,21 @@ public class StaXPatientParser {
                             break;
                         case "name":
                             event = reader.nextEvent();
-                            patient.setName(event.asCharacters().getData());
+                            if(patient != null) {
+                                patient.setName(event.asCharacters().getData());
+                            }
                             break;
                         case "address":
                             event = reader.nextEvent();
-                            patient.setAddress(event.asCharacters().getData());
+                            if(patient != null) {
+                                patient.setAddress(event.asCharacters().getData());
+                            }
                             break;
                         case "phoneNumber":
                             event = reader.nextEvent();
-                            patient.setPhoneNumber(event.asCharacters().getData());
+                            if(patient != null) {
+                                patient.setPhoneNumber(event.asCharacters().getData());
+                            }
                             break;
                         case "doctor":
                             Attribute docId = (startElement.getAttributeByName(new QName("employeeId")));
@@ -90,7 +94,9 @@ public class StaXPatientParser {
                             event = reader.nextEvent();
                             docDepartment.setName(event.asCharacters().getData());
                             doctor.setDepartment(docDepartment);
-                            patient.setDoctor(doctor);
+                            if(patient != null) {
+                                patient.setDoctor(doctor);
+                            }
                             break;
                         case "patientMedicalChart":
                             Attribute reportId = (startElement.getAttributeByName(new QName("reportId")));
@@ -105,13 +111,15 @@ public class StaXPatientParser {
                         case "dateVisited":
                             event = reader.nextEvent();
                             String date = event.asCharacters().getData();
-                            SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD");
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                             try {
                                 pmc.setDate(sdf.parse(date));
                             } catch (ParseException e) {
                                 throw new RuntimeException(e);
                             }
-                            patient.setChart(pmc);
+                            if(patient != null) {
+                                patient.setChart(pmc);
+                            }
                             break;
                         case "nurse":
                             Attribute nurseId = (startElement.getAttributeByName(new QName("employeeId")));
@@ -137,7 +145,9 @@ public class StaXPatientParser {
                             event = reader.nextEvent();
                             nurseDepartment.setName(event.asCharacters().getData());
                             nurse.setDepartment(nurseDepartment);
-                            patient.setNurse(nurse);
+                            if(patient != null) {
+                                patient.setNurse(nurse);
+                            }
                             break;
                         case "insurance":
                             Attribute insurId = (startElement.getAttributeByName(new QName("id")));
@@ -148,7 +158,9 @@ public class StaXPatientParser {
                         case "insuranceName":
                             event = reader.nextEvent();
                             insurance.setName(event.asCharacters().getData());
-                            patient.setInsurance(insurance);
+                            if(patient != null) {
+                                patient.setInsurance(insurance);
+                            }
                             break;
 
                     }
@@ -166,13 +178,11 @@ public class StaXPatientParser {
         } catch (XMLStreamException e) {
             LOGGER.error("Unable to obtain XMLEventReader.");
             throw new RuntimeException(e);
-        }finally {
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
             try {
-                input.close();
                 reader.close();
-            } catch (IOException e) {
-                LOGGER.error("Unable to close file.");
-                throw new RuntimeException(e);
             } catch (XMLStreamException e) {
                 LOGGER.error("Unable to close XMLEventReader.");
                 throw new RuntimeException(e);

@@ -2,21 +2,32 @@ package com.solvd.hospital.model.patient;
 
 import com.solvd.hospital.model.*;
 
+import javax.xml.bind.annotation.*;
 import java.util.List;
 
+@XmlAccessorType (XmlAccessType.FIELD)
+@XmlRootElement (name = "patient")
 public class Patient extends User {
+    @XmlElement (name = "address")
     private String address;
+    @XmlElement (name = "phoneNumber")
     private String phoneNumber;
+    @XmlElement (name = "doctor")
     private Doctor doctor;
+    @XmlElement (name = "nurse")
     private Nurse nurse;
+    @XmlElement (name = "insurance")
     private Insurance insurance;
+    @XmlElement (name = "chart")
     private PatientMedicalChart chart;
+    @XmlElementWrapper(name = "appointments")
+    @XmlElement (name = "appointment")
     private List<Appointment> appointments;
 
     public Patient(){}
 
-    public Patient(int id, String name){
-        super(id, name);
+    public Patient(int id){
+        super(id);
     }
 
     public String getAddress() {

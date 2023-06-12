@@ -1,7 +1,6 @@
-package com.solvd.hospital.dao;
+package com.solvd.hospital.dao.impl;
 
-import com.solvd.hospital.util.IdException;
-import com.solvd.hospital.dao.impl.INurseDao;
+import com.solvd.hospital.dao.INurseDao;
 import com.solvd.hospital.model.Nurse;
 import com.solvd.hospital.util.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
@@ -22,13 +21,7 @@ public class NurseDao implements INurseDao {
     public void insert(Nurse nurse) {
         ConnectionPool connectionPool = ConnectionPool.getInstance();
         Connection connection = connectionPool.getConnection();
-        PreparedStatement preparedStatement = null;
-        if(nurse == null){
-            LOGGER.error("Nurse object is null.");
-            throw new NullPointerException();
-        }
-        try {
-            preparedStatement =  connection.prepareStatement(INSERT);
+        try (PreparedStatement preparedStatement =  connection.prepareStatement(INSERT);) {
             preparedStatement.setString(1, nurse.getName());
             preparedStatement.setString(2, nurse.getPosition());
             preparedStatement.setInt(3, nurse.getId());
@@ -38,12 +31,6 @@ public class NurseDao implements INurseDao {
             LOGGER.error("Unable to execute Prepared Statement.");
             throw new RuntimeException(e);
         }finally {
-            try {
-                preparedStatement.close();
-            } catch (SQLException e) {
-                LOGGER.error("Unable to close Prepared Statement.");
-                throw new RuntimeException(e);
-            }
             connectionPool.releaseConnection(connection);
         }
     }
@@ -52,13 +39,7 @@ public class NurseDao implements INurseDao {
     public void update(Nurse nurse) {
         ConnectionPool connectionPool = ConnectionPool.getInstance();
         Connection connection = connectionPool.getConnection();
-        PreparedStatement preparedStatement = null;
-        if(nurse == null){
-            LOGGER.error("Nurse object is null.");
-            throw new NullPointerException();
-        }
-        try {
-            preparedStatement = connection.prepareStatement(UPDATE);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE);){
             preparedStatement.setString(1, nurse.getName());
             preparedStatement.setString(2, nurse.getPosition());
             preparedStatement.setInt(3, nurse.getId());
@@ -67,12 +48,6 @@ public class NurseDao implements INurseDao {
             LOGGER.error("Unable to execute Prepared Statement.");
             throw new RuntimeException(e);
         }finally {
-            try {
-                preparedStatement.close();
-            } catch (SQLException e) {
-                LOGGER.error("Unable to close Prepared Statement.");
-                throw new RuntimeException(e);
-            }
             connectionPool.releaseConnection(connection);
         }
     }
@@ -81,25 +56,13 @@ public class NurseDao implements INurseDao {
     public void deleteById(int id) {
         ConnectionPool connectionPool = ConnectionPool.getInstance();
         Connection connection = connectionPool.getConnection();
-        PreparedStatement preparedStatement = null;
-        if(id<=0){
-            LOGGER.error("Invalid value for id.");
-            throw new IdException("Invalid value for id.");
-        }
-        try {
-            preparedStatement = connection.prepareStatement(DELETE);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE);){
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             LOGGER.error("Unable to execute Prepared Statement.");
             throw new RuntimeException(e);
         }finally {
-            try {
-                preparedStatement.close();
-            } catch (SQLException e) {
-                LOGGER.error("Unable to close Prepared Statement.");
-                throw new RuntimeException(e);
-            }
             connectionPool.releaseConnection(connection);
         }
     }
@@ -109,31 +72,18 @@ public class NurseDao implements INurseDao {
         Nurse nurse = new Nurse();
         ConnectionPool connectionPool = ConnectionPool.getInstance();
         Connection connection = connectionPool.getConnection();
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        if(id<=0){
-            LOGGER.error("Invalid value for id.");
-            throw new IdException("Invalid value for id.");
-        }
-        try{
-            preparedStatement = connection.prepareStatement(GET);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(GET);){
             preparedStatement.setLong(1, id);
-            resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()){
-                nurse.setId(resultSet.getInt("employeeId"));
-                nurse.setName(resultSet.getString("name"));
+            try (ResultSet resultSet = preparedStatement.executeQuery();) {
+                while (resultSet.next()) {
+                    nurse.setId(resultSet.getInt("employeeId"));
+                    nurse.setName(resultSet.getString("name"));
+                }
             }
         } catch (SQLException e) {
             LOGGER.error("Unable to obtain resource.");
             throw new RuntimeException(e);
         }finally {
-            try {
-                preparedStatement.close();
-                resultSet.close();
-            } catch (SQLException e) {
-                LOGGER.error("Unable to close resource.");
-                throw new RuntimeException(e);
-            }
             connectionPool.releaseConnection(connection);
         }
         return nurse;

@@ -31,19 +31,12 @@ public class ConnectionPool {
     }
 
     public Connection getConnection(){
-        ConnectionUtil connectionUtil = new ConnectionUtil();
         Connection connection;
         while(numConnections > 4){
             LOGGER.info("Unable to get connection at this moment.");
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                LOGGER.error("Thread was unable to put to sleep");
-                throw new RuntimeException(e);
-            }
         }
         if(connections.isEmpty()) {
-            connection = connectionUtil.runConnection();
+            connection = runConnection();
             LOGGER.debug("Connection Successfully Established.");
         }else{
             LOGGER.debug("Successfully reused connection.");
@@ -65,5 +58,19 @@ public class ConnectionPool {
     }
     public synchronized void subtractCounter(){
         numConnections--;
+    }
+
+    private Connection runConnection(){
+        Connection connection;
+        Properties properties = PropertiesUtil.getProperties();;
+        try {
+            connection = DriverManager.getConnection(properties.getProperty("db.url"),
+                    properties.getProperty("db.user"), properties.getProperty("db.password"));
+            LOGGER.debug("Connection Successfully Established.");
+        } catch (SQLException e) {
+            LOGGER.error("Unable to get connection.");
+            throw new RuntimeException(e);
+        }
+        return connection;
     }
 }

@@ -1,7 +1,6 @@
-package com.solvd.hospital.dao;
+package com.solvd.hospital.dao.impl;
 
-import com.solvd.hospital.util.IdException;
-import com.solvd.hospital.dao.impl.IDoctorDao;
+import com.solvd.hospital.dao.IDoctorDao;
 import com.solvd.hospital.model.Doctor;
 import com.solvd.hospital.util.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
@@ -24,13 +23,7 @@ public class DoctorDao implements IDoctorDao {
     public void insert(Doctor doctor) {
         ConnectionPool connectionPool = ConnectionPool.getInstance();
         Connection connection = connectionPool.getConnection();
-        PreparedStatement preparedStatement = null;
-        if(doctor == null){
-            LOGGER.error("Doctor object is null.");
-            throw new NullPointerException();
-        }
-        try {
-            preparedStatement =  connection.prepareStatement(INSERT);
+        try(PreparedStatement preparedStatement =  connection.prepareStatement(INSERT);) {
             preparedStatement.setInt(1, doctor.getId());
             preparedStatement.setString(2, doctor.getName());
             preparedStatement.setString(3, doctor.getPosition());
@@ -40,12 +33,6 @@ public class DoctorDao implements IDoctorDao {
             LOGGER.error("Unable to execute Prepared Statement.");
             throw new RuntimeException(e);
         }finally {
-            try {
-                preparedStatement.close();
-            } catch (SQLException e) {
-                LOGGER.error("Unable to close Prepared Statement.");
-                throw new RuntimeException(e);
-            }
             connectionPool.releaseConnection(connection);
         }
     }
@@ -54,13 +41,7 @@ public class DoctorDao implements IDoctorDao {
     public void update(Doctor doctor) {
         ConnectionPool connectionPool = ConnectionPool.getInstance();
         Connection connection = connectionPool.getConnection();
-        PreparedStatement preparedStatement = null;
-        if(doctor == null){
-            LOGGER.error("Doctor object is null.");
-            throw new NullPointerException();
-        }
-        try {
-            preparedStatement = connection.prepareStatement(UPDATE);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE);) {
             preparedStatement.setString(1, doctor.getName());
             preparedStatement.setString(2, doctor.getPosition());
             preparedStatement.setInt(3, doctor.getId());
@@ -70,12 +51,6 @@ public class DoctorDao implements IDoctorDao {
             throw new RuntimeException(e);
         }
         finally {
-            try {
-                preparedStatement.close();
-            } catch (SQLException e) {
-                LOGGER.error("Unable to close Prepared Statement.");
-                throw new RuntimeException(e);
-            }
             connectionPool.releaseConnection(connection);
         }
     }
@@ -84,25 +59,13 @@ public class DoctorDao implements IDoctorDao {
     public void deleteById(int id) {
         ConnectionPool connectionPool = ConnectionPool.getInstance();
         Connection connection = connectionPool.getConnection();
-        PreparedStatement preparedStatement = null;
-        if(id<=0){
-            LOGGER.error("Invalid value for id.");
-            throw new IdException("Id value is invalid.");
-        }
-        try {
-            preparedStatement = connection.prepareStatement(DELETE);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE);) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             LOGGER.error("Unable to execute Prepared Statement.");
             throw new RuntimeException(e);
         } finally {
-            try {
-                preparedStatement.close();
-            } catch (SQLException e) {
-                LOGGER.error("Unable to close Prepared Statement.");
-                throw new RuntimeException(e);
-            }
             connectionPool.releaseConnection(connection);
         }
     }
@@ -112,31 +75,18 @@ public class DoctorDao implements IDoctorDao {
         Doctor doctor = new Doctor();
         ConnectionPool connectionPool = ConnectionPool.getInstance();
         Connection connection = connectionPool.getConnection();
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        if(id<=0){
-            LOGGER.error("Invalid value for id.");
-            throw new IdException("Invalid value for id.");
-        }
-        try{
-            preparedStatement = connection.prepareStatement(GET);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(GET);){
             preparedStatement.setLong(1, id);
-            resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()){
-                doctor.setId(resultSet.getInt("employeeId"));
-                doctor.setName(resultSet.getString("name"));
+            try(ResultSet resultSet = preparedStatement.executeQuery();) {
+                while (resultSet.next()) {
+                    doctor.setId(resultSet.getInt("employeeId"));
+                    doctor.setName(resultSet.getString("name"));
+                }
             }
         } catch (SQLException e) {
             LOGGER.error("Unable to obtain resource.");
             throw new RuntimeException(e);
         }finally {
-            try {
-                preparedStatement.close();
-                resultSet.close();
-            } catch (SQLException e) {
-                LOGGER.error("Unable to close resource.");
-                throw new RuntimeException(e);
-            }
             connectionPool.releaseConnection(connection);
         }
         return doctor;

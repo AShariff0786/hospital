@@ -33,7 +33,6 @@ SELECT * FROM Patient
 	JOIN Nurse ON Patient.Nurse_employeeId = Nurse.employeeId
     JOIN PatientMedicalChart ON Patient.PatientMedicalChart_reportId = PatientMedicalChart.reportId
     JOIN MedicalBill ON Patient.id = MedicalBill.Patient_id
-    JOIN Lab ON MedicalBill.Lab_id = Lab.id
     JOIN Departments ON Patient.Doctor_employeeId = Doctor.employeeId AND Doctor.Departments_id = Departments.id
     JOIN MedicationPrescription ON MedicationPrescription.PatientMedicalChart_reportId = patientmedicalchart.reportId
     JOIN Medication ON MedicationPrescription.Medication_id = medication.id

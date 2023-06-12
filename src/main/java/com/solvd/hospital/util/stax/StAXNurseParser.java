@@ -1,6 +1,5 @@
 package com.solvd.hospital.util.stax;
 
-import com.solvd.hospital.Main;
 import com.solvd.hospital.model.Department;
 import com.solvd.hospital.model.Nurse;
 import org.apache.logging.log4j.LogManager;
@@ -24,11 +23,9 @@ public class StAXNurseParser {
     public ArrayList<Nurse> parse(){
         ArrayList<Nurse> nurses = new ArrayList<>();
         Department department = new Department();
-        FileInputStream input = null;
         XMLEventReader reader = null;
 
-        try {
-            input = new FileInputStream("src/main/resources/xml/nurses.xml");
+        try (FileInputStream input = new FileInputStream("src/main/resources/xml/nurses.xml");){
             reader = XMLInputFactory.newInstance().createXMLEventReader(input);
             Nurse nurse = null;
             while(reader.hasNext()){
@@ -45,11 +42,15 @@ public class StAXNurseParser {
                             break;
                         case "name":
                             event = reader.nextEvent();
-                            nurse.setName(event.asCharacters().getData());
+                            if(nurse != null) {
+                                nurse.setName(event.asCharacters().getData());
+                            }
                             break;
                         case "position":
                             event = reader.nextEvent();
-                            nurse.setPosition(event.asCharacters().getData());
+                            if(nurse != null) {
+                                nurse.setPosition(event.asCharacters().getData());
+                            }
                             break;
                         case "department":
                             Attribute id = (startElement.getAttributeByName(new QName("id")));
@@ -60,7 +61,9 @@ public class StAXNurseParser {
                         case "depName":
                             event = reader.nextEvent();
                             department.setName(event.asCharacters().getData());
-                            nurse.setDepartment(department);
+                            if(nurse != null) {
+                                nurse.setDepartment(department);
+                            }
                             break;
                     }
                 }
@@ -77,13 +80,11 @@ public class StAXNurseParser {
         } catch (XMLStreamException e) {
             LOGGER.error("Unable to get XMLEventReader");
             throw new RuntimeException(e);
-        }finally {
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
             try {
-                input.close();
                 reader.close();
-            } catch (IOException e) {
-                LOGGER.error("Unable to close file.");
-                throw new RuntimeException(e);
             } catch (XMLStreamException e) {
                 LOGGER.error("Unable to close XMLEventReader.");
                 throw new RuntimeException(e);

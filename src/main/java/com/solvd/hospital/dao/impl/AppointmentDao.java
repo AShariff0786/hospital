@@ -1,16 +1,15 @@
-package com.solvd.hospital.dao;
+package com.solvd.hospital.dao.impl;
 
-import com.solvd.hospital.util.IdException;
-import com.solvd.hospital.dao.impl.IAppointmentDao;
+import com.solvd.hospital.dao.IAppointmentDao;
 import com.solvd.hospital.model.Appointment;
+import com.solvd.hospital.model.Doctor;
+import com.solvd.hospital.model.Nurse;
+import com.solvd.hospital.model.patient.Patient;
 import com.solvd.hospital.util.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class AppointmentDao implements IAppointmentDao {
     private final static Logger LOGGER = LogManager.getLogger(AppointmentDao.class);
@@ -23,15 +22,9 @@ public class AppointmentDao implements IAppointmentDao {
     public void insert(Appointment appointment) {
         ConnectionPool connectionPool = ConnectionPool.getInstance();
         Connection connection = connectionPool.getConnection();
-        PreparedStatement preparedStatement = null;
-        if(appointment == null){
-            LOGGER.error("Appointment Object is null.");
-            throw new NullPointerException();
-        }
-        try {
-            preparedStatement = connection.prepareStatement(INSERT);
+        try(PreparedStatement preparedStatement = connection.prepareStatement(INSERT);) {
             preparedStatement.setDate(1, (java.sql.Date) appointment.getDate());
-            preparedStatement.setTime(2,appointment.getTime());
+            preparedStatement.setTime(2, Time.valueOf(appointment.getTime()));
             preparedStatement.setInt(3, appointment.getPatient().getId());
             preparedStatement.setInt(4, appointment.getDoctor().getId());
             preparedStatement.setInt(5, appointment.getNurse().getId());
@@ -41,12 +34,6 @@ public class AppointmentDao implements IAppointmentDao {
             LOGGER.error("Unable to execute Prepared Statement.");
             throw new RuntimeException(e);
         }finally {
-            try {
-                preparedStatement.close();
-            } catch (SQLException e) {
-                LOGGER.error("Unable to close Prepared Statement.");
-                throw new RuntimeException(e);
-            }
             connectionPool.releaseConnection(connection);
         }
     }
@@ -55,27 +42,15 @@ public class AppointmentDao implements IAppointmentDao {
     public void update(Appointment appointment) {
         ConnectionPool connectionPool = ConnectionPool.getInstance();
         Connection connection = connectionPool.getConnection();
-        PreparedStatement preparedStatement = null;
-        if(appointment == null){
-            LOGGER.error("Appointment object was null.");
-            throw new NullPointerException();
-        }
-        try {
-            preparedStatement = connection.prepareStatement(UPDATE);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE);) {
             preparedStatement.setDate(1, (java.sql.Date) appointment.getDate());
-            preparedStatement.setTime(2, appointment.getTime());
+            preparedStatement.setTime(2, Time.valueOf(appointment.getTime()));
             preparedStatement.setInt(3, appointment.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             LOGGER.error("Unable to execute Prepared Statement.");
             throw new RuntimeException(e);
         }finally {
-            try {
-                preparedStatement.close();
-            } catch (SQLException e) {
-                LOGGER.error("Unable to close Prepared Statement.");
-                throw new RuntimeException(e);
-            }
             connectionPool.releaseConnection(connection);
         }
     }
@@ -84,25 +59,13 @@ public class AppointmentDao implements IAppointmentDao {
     public void deleteById(int id) {
         ConnectionPool connectionPool = ConnectionPool.getInstance();
         Connection connection = connectionPool.getConnection();
-        PreparedStatement preparedStatement = null;
-        if(id<=0){
-            LOGGER.error("Incorrect value entered for id.");
-            throw new IdException("Invalid id.");
-        }
-        try {
-            preparedStatement = connection.prepareStatement(DELETE);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE);) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             LOGGER.error("Unable to execute Prepared Statement.");
             throw new RuntimeException(e);
         }finally {
-            try {
-                preparedStatement.close();
-            } catch (SQLException e) {
-                LOGGER.error("Unable to close Prepared Statement.");
-                throw new RuntimeException(e);
-            }
             connectionPool.releaseConnection(connection);
         }
     }
@@ -112,38 +75,22 @@ public class AppointmentDao implements IAppointmentDao {
         Appointment appointment=new Appointment();
         ConnectionPool connectionPool = ConnectionPool.getInstance();
         Connection connection = connectionPool.getConnection();
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        if(id<=0){
-            LOGGER.error("Entered Id is invalid.");
-            throw new IdException("Invalid Id.");
-        }
-        try {
-            preparedStatement = connection.prepareStatement(GET);
+        try(PreparedStatement preparedStatement = connection.prepareStatement(GET);) {
             preparedStatement.setLong(1, id);
-            resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()){
-                appointment.setId(resultSet.getInt("id"));
-                appointment.setDate(resultSet.getDate("date"));
-                appointment.setTime(resultSet.getTime("time"));
-                DoctorDao doctorDao = new DoctorDao();
-                appointment.setDoctor(doctorDao.getById(resultSet.getInt("Doctor_employeeId")));
-                NurseDao nurseDao = new NurseDao();
-                appointment.setNurse(nurseDao.getById(resultSet.getInt("Nurse_employeeId")));
-                PatientDao patientDao = new PatientDao();
-                appointment.setPatient(patientDao.getById(resultSet.getInt("Patient_id")));
+            try (ResultSet resultSet = preparedStatement.executeQuery();){
+                while (resultSet.next()) {
+                    appointment.setId(resultSet.getInt("id"));
+                    appointment.setDate(resultSet.getDate("date"));
+                    appointment.setTime(resultSet.getTime("time").toLocalTime());
+                    appointment.setDoctor(new Doctor((resultSet.getInt("Doctor_employeeId"))));
+                    appointment.setNurse(new Nurse(resultSet.getInt("Nurse_employeeId")));
+                    appointment.setPatient(new Patient(resultSet.getInt("Patient_id")));
+                }
             }
         } catch (SQLException e) {
             LOGGER.error("Unable to obtain resource.");
             throw new RuntimeException(e);
         }finally {
-            try {
-                preparedStatement.close();
-                resultSet.close();
-            } catch (SQLException e) {
-                LOGGER.error("Unable to close resource.");
-                throw new RuntimeException(e);
-            }
             connectionPool.releaseConnection(connection);
         }
         return appointment;

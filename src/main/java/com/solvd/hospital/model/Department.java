@@ -1,11 +1,18 @@
 package com.solvd.hospital.model;
 
+import javax.xml.bind.annotation.*;
 import java.util.List;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement (name = "department")
 public class Department {
+    @XmlAttribute
     private int id;
+    @XmlElement(name = "name")
     private String name;
+    @XmlTransient
     private List<Doctor> doctors;
+    @XmlTransient
     private List<Nurse> nurses;
 
     public Department(){}

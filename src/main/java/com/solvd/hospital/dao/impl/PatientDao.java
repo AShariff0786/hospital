@@ -1,7 +1,6 @@
-package com.solvd.hospital.dao;
+package com.solvd.hospital.dao.impl;
 
-import com.solvd.hospital.util.IdException;
-import com.solvd.hospital.dao.impl.IPatientDao;
+import com.solvd.hospital.dao.IPatientDao;
 import com.solvd.hospital.model.Doctor;
 import com.solvd.hospital.model.Insurance;
 import com.solvd.hospital.model.Nurse;
@@ -27,13 +26,7 @@ public class PatientDao implements IPatientDao {
     public void insert(Patient patient) {
         ConnectionPool connectionPool = ConnectionPool.getInstance();
         Connection connection = connectionPool.getConnection();
-        PreparedStatement preparedStatement = null;
-        if(patient == null){
-            LOGGER.error("Patient object is null.");
-            throw new NullPointerException();
-        }
-        try {
-            preparedStatement = connection.prepareStatement(INSERT);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT);) {
             preparedStatement.setString(1, patient.getName());
             preparedStatement.setInt(2, patient.getDoctor().getId());
             preparedStatement.setInt(3, patient.getChart().getId());
@@ -47,12 +40,6 @@ public class PatientDao implements IPatientDao {
             LOGGER.error("Unable to execute Prepared Statement.");
             throw new RuntimeException(e);
         }finally {
-            try {
-                preparedStatement.close();
-            } catch (SQLException e) {
-                LOGGER.error("Unable to close Prepared Statement.");
-                throw new RuntimeException(e);
-            }
             connectionPool.releaseConnection(connection);
         }
     }
@@ -61,13 +48,7 @@ public class PatientDao implements IPatientDao {
     public void update(Patient patient) {
         ConnectionPool connectionPool = ConnectionPool.getInstance();
         Connection connection = connectionPool.getConnection();
-        PreparedStatement preparedStatement = null;
-        if(patient == null){
-            LOGGER.error("Patient object is null.");
-            throw new NullPointerException();
-        }
-        try {
-            preparedStatement = connection.prepareStatement(UPDATE);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE);){
             preparedStatement.setString(1, patient.getName());
             preparedStatement.setString(2, patient.getAddress());
             preparedStatement.setString(3, patient.getPhoneNumber());
@@ -77,12 +58,6 @@ public class PatientDao implements IPatientDao {
             LOGGER.error("Unable to execute Prepared Statement.");
             throw new RuntimeException(e);
         }finally {
-            try {
-                preparedStatement.close();
-            } catch (SQLException e) {
-                LOGGER.error("Unable to close Prepared Statement.");
-                throw new RuntimeException(e);
-            }
             connectionPool.releaseConnection(connection);
         }
     }
@@ -91,25 +66,13 @@ public class PatientDao implements IPatientDao {
     public void deleteById(int id) {
         ConnectionPool connectionPool = ConnectionPool.getInstance();
         Connection connection = connectionPool.getConnection();
-        PreparedStatement preparedStatement = null;
-        if(id<=0){
-            LOGGER.error("Invalid value for id.");
-            throw new IdException("Invalid value for id.");
-        }
-        try {
-            preparedStatement = connection.prepareStatement(DELETE);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE);){
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             LOGGER.error("Unable to execute Prepared Statement.");
             throw new RuntimeException(e);
         }finally {
-            try {
-                preparedStatement.close();
-            } catch (SQLException e) {
-                LOGGER.error("Unable to close Prepared Statement.");
-                throw new RuntimeException(e);
-            }
             connectionPool.releaseConnection(connection);
         }
     }
@@ -119,37 +82,24 @@ public class PatientDao implements IPatientDao {
         Patient patient = new Patient();
         ConnectionPool connectionPool = ConnectionPool.getInstance();
         Connection connection = connectionPool.getConnection();
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        if(id<=0){
-            LOGGER.error("Invalid value for id.");
-            throw new IdException("Invalid value for id.");
-        }
-        try {
-            preparedStatement = connection.prepareStatement(GET);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(GET);){
             preparedStatement.setLong(1, id);
-            resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                patient.setId(resultSet.getInt("id"));
-                patient.setName(resultSet.getString("name"));
-                patient.setAddress(resultSet.getString("address"));
-                patient.setPhoneNumber(resultSet.getString("phoneNumber"));
-                patient.setDoctor(new Doctor(resultSet.getInt("Doctor_employeeId")));
-                patient.setNurse(new Nurse(resultSet.getInt("Nurse_employeeId")));
-                patient.setInsurance(new Insurance(resultSet.getInt("Insurance_id")));
-                patient.setChart(new PatientMedicalChart(resultSet.getInt("PatientMedicalChart_reportId")));
+            try(ResultSet resultSet = preparedStatement.executeQuery();) {
+                while (resultSet.next()) {
+                    patient.setId(resultSet.getInt("id"));
+                    patient.setName(resultSet.getString("name"));
+                    patient.setAddress(resultSet.getString("address"));
+                    patient.setPhoneNumber(resultSet.getString("phoneNumber"));
+                    patient.setDoctor(new Doctor(resultSet.getInt("Doctor_employeeId")));
+                    patient.setNurse(new Nurse(resultSet.getInt("Nurse_employeeId")));
+                    patient.setInsurance(new Insurance(resultSet.getInt("Insurance_id")));
+                    patient.setChart(new PatientMedicalChart(resultSet.getInt("PatientMedicalChart_reportId")));
+                }
             }
         } catch (SQLException e) {
             LOGGER.error("Unable to obtain resource.");
             throw new RuntimeException(e);
         }finally {
-            try {
-                preparedStatement.close();
-                resultSet.close();
-            } catch (SQLException e) {
-                LOGGER.error("Unable to close resource.");
-                throw new RuntimeException(e);
-            }
             connectionPool.releaseConnection(connection);
         }
         return patient;

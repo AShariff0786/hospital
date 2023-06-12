@@ -91,18 +91,10 @@ CREATE TABLE IF NOT EXISTS `hospital1`.`MedicalBill` (
   `amountDue` DECIMAL(4),
   `Patient_id` INT NOT NULL,
   `Insurance_id` INT NOT NULL,
-  `Lab_id` INT NOT NULL,
-  `Treatment_id` INT NOT NULL,
     FOREIGN KEY (`Patient_id`) REFERENCES `hospital1`.`Patient` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
     FOREIGN KEY (`Insurance_id`) REFERENCES `hospital1`.`Insurance` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-    FOREIGN KEY (`Lab_id`) REFERENCES `hospital1`.`Lab` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-    FOREIGN KEY (`Treatment_id`) REFERENCES `hospital1`.`Treatment` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
@@ -173,7 +165,7 @@ INSERT INTO Patient VALUES (1,"Jim" , "123-122 122st", "123-123-1234",  1, 1, 1,
 INSERT INTO Appointment VALUES (1,"2023-01-01", "12:00",1, 1, 1 );
 INSERT INTO Lab VALUES (1, "Bloodwork", 432.00 );
 INSERT INTO Treatment VALUES (1, "Surgery", 108.00 );
-INSERT INTO MedicalBill VALUES (1, 813.00, 1, 1, 1, 1 );
+INSERT INTO MedicalBill VALUES (1, 813.00, 1, 1);
 INSERT INTO Medication VALUES (1, "Lisinopril", "Zestril");
 INSERT INTO MedicationPrescription VALUES ( 1, 1, 8, 3);
 INSERT INTO Symptom VALUES (1, "Fever");
@@ -190,8 +182,8 @@ INSERT INTO Lab VALUES (2, "Bloodwork", 432.00);
 INSERT INTO Lab VALUES (4, "HBL Test", 1221.00 );
 INSERT INTO Lab VALUES (3, "HBL Test", 1221.00 );
 INSERT INTO Lab VALUES (5, "Choloesterol Test", 20.50 );
-INSERT INTO MedicalBill VALUES (2, 813.00, 2, 1, 1, 1 );
-INSERT INTO MedicalBill VALUES (4, 10.00, 1, 1, 1, 1 );
-INSERT INTO MedicalBill VALUES (3, 1211.00, 3, 1, 1, 1 );
+INSERT INTO MedicalBill VALUES (2, 813.00, 2, 1 );
+INSERT INTO MedicalBill VALUES (4, 10.00, 1, 1);
+INSERT INTO MedicalBill VALUES (3, 1211.00, 3, 1);
 INSERT INTO Medication VALUES (2, "Lisinopril", "Zestril");
 INSERT INTO Symptom VALUES (2, "Fever");

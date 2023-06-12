@@ -1,6 +1,10 @@
 package com.solvd.hospital.model;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+
 public abstract class User {
+
     private int id;
     private String name;
 
@@ -14,6 +18,7 @@ public abstract class User {
         this.name = name;
     }
 
+    @XmlAttribute
     public int getId() {
         return id;
     }
@@ -22,6 +27,7 @@ public abstract class User {
         this.id = id;
     }
 
+    @XmlElement (name ="name")
     public String getName() {
         return name;
     }
