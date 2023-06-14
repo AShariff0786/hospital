@@ -1,25 +1,35 @@
 package com.solvd.hospital.model.patient;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.solvd.hospital.model.*;
 
 import javax.xml.bind.annotation.*;
 import java.util.List;
 
+@JsonRootName(value = "patient")
 @XmlAccessorType (XmlAccessType.FIELD)
 @XmlRootElement (name = "patient")
 public class Patient extends User {
+    @JsonProperty(value = "address")
     @XmlElement (name = "address")
     private String address;
+    @JsonProperty(value = "phoneNumber")
     @XmlElement (name = "phoneNumber")
     private String phoneNumber;
+    @JsonProperty(value = "doctor")
     @XmlElement (name = "doctor")
     private Doctor doctor;
+    @JsonProperty(value = "nurse")
     @XmlElement (name = "nurse")
     private Nurse nurse;
+    @JsonProperty(value = "insurance")
     @XmlElement (name = "insurance")
     private Insurance insurance;
+    @JsonProperty(value = "chart")
     @XmlElement (name = "chart")
     private PatientMedicalChart chart;
+    @JsonProperty(value = "appointments")
     @XmlElementWrapper(name = "appointments")
     @XmlElement (name = "appointment")
     private List<Appointment> appointments;

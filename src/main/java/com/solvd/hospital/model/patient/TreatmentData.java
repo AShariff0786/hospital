@@ -1,5 +1,8 @@
 package com.solvd.hospital.model.patient;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.solvd.hospital.model.Treatment;
 import com.solvd.hospital.util.CustomDateAdapter;
 
@@ -8,13 +11,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Date;
 
+@JsonRootName(value = "treatmentData")
 @XmlRootElement (name = "treatmentData")
 public class TreatmentData {
+    @JsonProperty(value = "medicalBill" )
     private MedicalBill medicalBill;
+    @JsonProperty(value = "treatment")
     private Treatment treatment;
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-mm-dd")
     private Date startOfTreatment;
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-mm-dd")
     private Date endOfTreatment;
 
     public TreatmentData(){}

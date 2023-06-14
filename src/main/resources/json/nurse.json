@@ -1,0 +1,11 @@
+{
+  "nurse" : {
+    "id" : 4,
+    "name" : "Gabriela",
+    "position" : "Registered Nurse",
+    "department" : {
+      "id" : 2,
+      "name" : "Radiology"
+    }
+  }
+}

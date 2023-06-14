@@ -9,12 +9,14 @@
             <phoneNumber>123-123-1234</phoneNumber>
             <doctor id="1">
                 <name>John</name>
+                <position>Surgeon</position>
                 <department id="1">
                     <name>Cardiology</name>
                 </department>
             </doctor>
             <nurse id="1">
                 <name>Jane</name>
+                <position>Medical Assistant</position>
                 <department id="1">
                     <name>Cardiology</name>
                 </department>
@@ -24,7 +26,7 @@
             </insurance>
             <chart id="1">
                 <diagnosis>Broken Hand</diagnosis>
-                <date>2023-01-01T00:00:00-05:00</date>
+                <date>2023-01-01</date>
             </chart>
             <appointments>
                 <appointment id="1">

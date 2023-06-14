@@ -1,0 +1,61 @@
+{
+  "treatmentData" : {
+    "startOfTreatment" : "2023-00-02",
+    "endOfTreatment" : "2023-00-12",
+    "medicalBill" : {
+      "id" : 1,
+      "amountDue" : 1222.0,
+      "patient" : {
+        "id" : 1,
+        "name" : "Jim",
+        "address" : "123-122 122st",
+        "phoneNumber" : "123-123-1234",
+        "doctor" : {
+          "id" : 1,
+          "name" : "John",
+          "position" : "Surgeon",
+          "department" : {
+            "id" : 1,
+            "name" : "Cardiology"
+          }
+        },
+        "nurse" : {
+          "id" : 1,
+          "name" : "Jane",
+          "position" : "Medical Assistant",
+          "department" : {
+            "id" : 1,
+            "name" : "Cardiology"
+          }
+        },
+        "insurance" : {
+          "id" : 1,
+          "name" : "Medicare"
+        },
+        "chart" : {
+          "date" : "2023-00-01",
+          "id" : 1,
+          "diagnosis" : "Broken Hand"
+        },
+        "appointments" : [ {
+          "date" : "2023-00-12",
+          "time" : "12:30",
+          "id" : 1
+        }, {
+          "date" : "2026-00-01",
+          "time" : "01:45",
+          "id" : 2
+        } ]
+      },
+      "insurance" : {
+        "id" : 1,
+        "name" : "Medicare"
+      }
+    },
+    "treatment" : {
+      "id" : 1,
+      "name" : "Surgery",
+      "cost" : 123.11
+    }
+  }
+}

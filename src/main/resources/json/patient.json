@@ -1,0 +1,36 @@
+{
+  "patient" : {
+    "id" : 4,
+    "name" : "Jack",
+    "address" : "111-11 111St",
+    "phoneNumber" : "111-111-1111",
+    "doctor" : {
+      "id" : 1,
+      "name" : "Kevin",
+      "position" : "Physician",
+      "department" : {
+        "id" : 1,
+        "name" : "Cardiology"
+      }
+    },
+    "nurse" : {
+      "id" : 1,
+      "name" : "Gabriela",
+      "position" : "Registered Nurse",
+      "department" : {
+        "id" : 2,
+        "name" : "Radiology"
+      }
+    },
+    "insurance" : {
+      "id" : 1,
+      "name" : "Medicare"
+    },
+    "chart" : {
+      "date" : "2023-00-01",
+      "id" : 1,
+      "diagnosis" : "Sprain Ankle"
+    },
+    "appointments" : null
+  }
+}

@@ -1,11 +1,15 @@
 package com.solvd.hospital.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 public abstract class User {
 
+    @JsonProperty(value = "id")
     private int id;
+    @JsonProperty(value = "name")
     private String name;
 
     public User(){}

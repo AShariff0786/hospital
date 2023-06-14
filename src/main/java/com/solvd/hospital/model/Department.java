@@ -1,17 +1,26 @@
 package com.solvd.hospital.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
+
 import javax.xml.bind.annotation.*;
 import java.util.List;
 
+@JsonRootName(value = "department")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement (name = "department")
 public class Department {
+    @JsonProperty(value = "id")
     @XmlAttribute
     private int id;
+    @JsonProperty(value = "name")
     @XmlElement(name = "name")
     private String name;
+    @JsonIgnore
     @XmlTransient
     private List<Doctor> doctors;
+    @JsonIgnore
     @XmlTransient
     private List<Nurse> nurses;
 

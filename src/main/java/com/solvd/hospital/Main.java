@@ -1,5 +1,11 @@
 package com.solvd.hospital;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.solvd.hospital.model.*;
 import com.solvd.hospital.model.patient.MedicalBill;
 import com.solvd.hospital.model.patient.Patient;
@@ -17,6 +23,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
@@ -123,6 +130,8 @@ public class Main {
         appointments.add(app1);
         appointments.add(app2);
         treatmentData.getMedicalBill().getPatient().setAppointments(appointments);
+        treatmentData.getMedicalBill().getPatient().getDoctor().setPosition("Surgeon");
+        treatmentData.getMedicalBill().getPatient().getNurse().setPosition("Medical Assistant");
 
 
         //Marshaller with JAXB
@@ -132,6 +141,7 @@ public class Main {
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(treatmentData, new File("src/main/resources/xml/treatmentdata.xml"));
         } catch (JAXBException e) {
+            LOGGER.error("Error trying to marshal.");
             throw new RuntimeException(e);
         }
 
@@ -142,9 +152,39 @@ public class Main {
             Unmarshaller unmarshaller = context.createUnmarshaller();
             tdata = (TreatmentData) unmarshaller.unmarshal(new File("src/main/resources/xml/treatmentdata.xml"));
         } catch (JAXBException e) {
+            LOGGER.error("Error trying to unmarshal.");
             throw new RuntimeException(e);
         }
         LOGGER.info("Unmarshaller test: " + tdata.getTreatment().getName() + " " + tdata.getTreatment().getCost()
             + tdata.getStartOfTreatment() + " " + tdata.getEndOfTreatment() + " " + tdata.getMedicalBill().getPatient().getName());
+
+        //Serialize with Jackson
+        ObjectMapper objectMapper = new ObjectMapper().configure(SerializationFeature.WRAP_ROOT_VALUE, true);
+        objectMapper.registerModule(new JavaTimeModule());
+        try {
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File("src/main/resources/json/treatmentdata.json"),treatmentData);
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File("src/main/resources/json/doctor.json"),temp.get(0));
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File("src/main/resources/json/nurse.json"),nurses.get(0));
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File("src/main/resources/json/patient.json"),patients.get(0));
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File("src/main/resources/json/insurance.json"),patients.get(0).getInsurance());
+        } catch (IOException e) {
+            LOGGER.error("File not found.");
+            throw new RuntimeException(e);
+        }
+
+        //Deserialize with Jackson
+        Insurance insurance;
+        Doctor doc;
+        objectMapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
+        try {
+            insurance = objectMapper.readValue(new File("src/main/resources/json/insurance.json"), Insurance.class);
+            doc = objectMapper.readValue(new File("src/main/resources/json/doctor.json"), Doctor.class);
+        } catch (IOException e) {
+            LOGGER.error("File not found.");
+            throw new RuntimeException(e);
+        }
+        LOGGER.info("Deserializtion with Jackson on Insurance: " + insurance.getId() + " " +insurance.getName() );
+        LOGGER.info("Deserializtion with Jackson on Doctor: " + doc.getId() + " " +doc.getName() );
+
     }
 }
