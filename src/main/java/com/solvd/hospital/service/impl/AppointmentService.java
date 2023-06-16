@@ -1,5 +1,9 @@
 package com.solvd.hospital.service.impl;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.solvd.hospital.dao.*;
 import com.solvd.hospital.dao.impl.*;
 import com.solvd.hospital.model.Appointment;
@@ -11,6 +15,9 @@ import com.solvd.hospital.service.IAppointmentService;
 import com.solvd.hospital.util.IdException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.io.IOException;
 
 public class AppointmentService implements IAppointmentService {
     private final static Logger LOGGER = LogManager.getLogger(AppointmentService.class);
@@ -165,6 +172,84 @@ public class AppointmentService implements IAppointmentService {
             LOGGER.error("Invalid id was entered.");
             throw new IdException("Id must be 1 or greater");
         }
+    }
+
+    @Override
+    public void serializeNurse(Nurse nurse, File file) {
+        ObjectMapper objectMapper = new ObjectMapper().configure(SerializationFeature.WRAP_ROOT_VALUE, true);
+        objectMapper.registerModule(new JavaTimeModule());
+        try {
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, nurse);
+        } catch (IOException e) {
+            LOGGER.error("File not found.");
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Nurse deserializeNurse(File file) {
+        Nurse nurse;
+        ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
+        objectMapper.registerModule(new JavaTimeModule());
+        try {
+            nurse = objectMapper.readValue(file, Nurse.class);
+        } catch (IOException e) {
+            LOGGER.error("File not found.");
+            throw new RuntimeException(e);
+        }
+        return nurse;
+    }
+
+    @Override
+    public void serializeDoctor(Doctor doctor, File file) {
+        ObjectMapper objectMapper = new ObjectMapper().configure(SerializationFeature.WRAP_ROOT_VALUE, true);
+        objectMapper.registerModule(new JavaTimeModule());
+        try {
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, doctor);
+        } catch (IOException e) {
+            LOGGER.error("File not found.");
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Doctor deserializeDoctor(File file) {
+        Doctor doctor;
+        ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
+        objectMapper.registerModule(new JavaTimeModule());
+        try {
+            doctor = objectMapper.readValue(file, Doctor.class);
+        } catch (IOException e) {
+            LOGGER.error("File not found.");
+            throw new RuntimeException(e);
+        }
+        return doctor;
+    }
+
+    @Override
+    public void serializePatient(Patient patient, File file) {
+        ObjectMapper objectMapper = new ObjectMapper().configure(SerializationFeature.WRAP_ROOT_VALUE, true);
+        objectMapper.registerModule(new JavaTimeModule());
+        try {
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, patient);
+        } catch (IOException e) {
+            LOGGER.error("File not found.");
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Patient deserializePatient(File file) {
+        Patient patient;
+        ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
+        objectMapper.registerModule(new JavaTimeModule());
+        try {
+            patient = objectMapper.readValue(file, Patient.class);
+        } catch (IOException e) {
+            LOGGER.error("File not found.");
+            throw new RuntimeException(e);
+        }
+        return patient;
     }
 
 }

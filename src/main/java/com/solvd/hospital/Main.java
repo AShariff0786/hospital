@@ -1,29 +1,16 @@
 package com.solvd.hospital;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import com.solvd.hospital.model.*;
 import com.solvd.hospital.model.patient.MedicalBill;
 import com.solvd.hospital.model.patient.Patient;
 import com.solvd.hospital.model.patient.PatientMedicalChart;
 import com.solvd.hospital.model.patient.TreatmentData;
 import com.solvd.hospital.service.IMedicalBillService;
-import com.solvd.hospital.service.impl.AppointmentService;
-import com.solvd.hospital.service.impl.MedicalBillService;
-import com.solvd.hospital.service.impl.PatientMedicalChartService;
-import com.solvd.hospital.service.impl.StAXService;
+import com.solvd.hospital.service.impl.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import java.io.File;
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
@@ -135,56 +122,37 @@ public class Main {
 
 
         //Marshaller with JAXB
-        try {
-            JAXBContext context = JAXBContext.newInstance(TreatmentData.class);
-            Marshaller marshaller = context.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(treatmentData, new File("src/main/resources/xml/treatmentdata.xml"));
-        } catch (JAXBException e) {
-            LOGGER.error("Error trying to marshal.");
-            throw new RuntimeException(e);
-        }
+        TreatmentDataParsingService tdataParsingService = new TreatmentDataParsingService();
+        File tDataFile = new File("src/main/resources/xml/treatmentdata.xml");
+        tdataParsingService.marshalTreatmentData(treatmentData, tDataFile);
 
         //Unmarshaller with JAXB
-        TreatmentData tdata;
-        try {
-            JAXBContext context = JAXBContext.newInstance(TreatmentData.class);
-            Unmarshaller unmarshaller = context.createUnmarshaller();
-            tdata = (TreatmentData) unmarshaller.unmarshal(new File("src/main/resources/xml/treatmentdata.xml"));
-        } catch (JAXBException e) {
-            LOGGER.error("Error trying to unmarshal.");
-            throw new RuntimeException(e);
-        }
+        TreatmentData tdata = tdataParsingService.unmarshalTreatmentData(tDataFile);
         LOGGER.info("Unmarshaller test: " + tdata.getTreatment().getName() + " " + tdata.getTreatment().getCost()
             + tdata.getStartOfTreatment() + " " + tdata.getEndOfTreatment() + " " + tdata.getMedicalBill().getPatient().getName());
 
         //Serialize with Jackson
-        ObjectMapper objectMapper = new ObjectMapper().configure(SerializationFeature.WRAP_ROOT_VALUE, true);
-        objectMapper.registerModule(new JavaTimeModule());
-        try {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File("src/main/resources/json/treatmentdata.json"),treatmentData);
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File("src/main/resources/json/doctor.json"),temp.get(0));
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File("src/main/resources/json/nurse.json"),nurses.get(0));
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File("src/main/resources/json/patient.json"),patients.get(0));
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File("src/main/resources/json/insurance.json"),patients.get(0).getInsurance());
-        } catch (IOException e) {
-            LOGGER.error("File not found.");
-            throw new RuntimeException(e);
-        }
+        File docFile = new File("src/main/resources/json/doctor.json");
+        File nurseFile = new File("src/main/resources/json/nurse.json");
+        File patientFile = new File("src/main/resources/json/patient.json");
+        File insuranceFile = new File("src/main/resources/json/insurance.json");
+        tdataParsingService.serializeTreatmentData(tdata, tDataFile);
+        appointmentService.serializeDoctor(temp.get(0), docFile);
+        appointmentService.serializeNurse(nurses.get(0), nurseFile);
+        appointmentService.serializePatient(patients.get(0), patientFile);
+        medicalBillService.serializeInsurance(patients.get(0).getInsurance(), insuranceFile);
 
         //Deserialize with Jackson
-        Insurance insurance;
-        Doctor doc;
-        objectMapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
-        try {
-            insurance = objectMapper.readValue(new File("src/main/resources/json/insurance.json"), Insurance.class);
-            doc = objectMapper.readValue(new File("src/main/resources/json/doctor.json"), Doctor.class);
-        } catch (IOException e) {
-            LOGGER.error("File not found.");
-            throw new RuntimeException(e);
-        }
+        Insurance insurance = medicalBillService.deserializeInsurance(insuranceFile);
+        Doctor doc = appointmentService.deserializeDoctor(docFile);
+        TreatmentData tdata2 = tdataParsingService.deserializeTreatmentData(tDataFile);
+        Patient patient2 = appointmentService.deserializePatient(patientFile);
+        Nurse nurse2 = appointmentService.deserializeNurse(nurseFile);
         LOGGER.info("Deserializtion with Jackson on Insurance: " + insurance.getId() + " " +insurance.getName() );
         LOGGER.info("Deserializtion with Jackson on Doctor: " + doc.getId() + " " +doc.getName() );
+        LOGGER.info("Deserializtion with Jackson on Patient: " + patient2.getId() + " " +patient2.getName() );
+        LOGGER.info("Deserializtion with Jackson on Nurse: " + nurse2.getId() + " " +nurse2.getName() );
+        LOGGER.info("Deserializtion with Jackson on TreatmentData: " + tdata2.getStartOfTreatment() + " " +tdata2.getEndOfTreatment() );
 
     }
 }

@@ -1,7 +1,13 @@
 package com.solvd.hospital.service.impl;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.solvd.hospital.dao.impl.MedicalBillDao;
 import com.solvd.hospital.dao.IMedicalBillDao;
+import com.solvd.hospital.model.Doctor;
+import com.solvd.hospital.model.Insurance;
 import com.solvd.hospital.model.patient.MedicalBill;
 import com.solvd.hospital.model.patient.Patient;
 import com.solvd.hospital.service.IAppointmentService;
@@ -9,6 +15,9 @@ import com.solvd.hospital.service.IMedicalBillService;
 import com.solvd.hospital.util.IdException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.io.IOException;
 
 public class MedicalBillService implements IMedicalBillService {
     private final static Logger LOGGER = LogManager.getLogger(MedicalBillService.class);
@@ -59,5 +68,31 @@ public class MedicalBillService implements IMedicalBillService {
             LOGGER.error("MedicalBill object is null.");
             throw new NullPointerException();
         }
+    }
+
+    @Override
+    public void serializeInsurance(Insurance insurance, File file) {
+        ObjectMapper objectMapper = new ObjectMapper().configure(SerializationFeature.WRAP_ROOT_VALUE, true);
+        objectMapper.registerModule(new JavaTimeModule());
+        try {
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, insurance);
+        } catch (IOException e) {
+            LOGGER.error("File not found.");
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Insurance deserializeInsurance(File file) {
+        Insurance insurance;
+        ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
+        objectMapper.registerModule(new JavaTimeModule());
+        try {
+            insurance = objectMapper.readValue(file, Insurance.class);
+        } catch (IOException e) {
+            LOGGER.error("File not found.");
+            throw new RuntimeException(e);
+        }
+        return insurance;
     }
 }
