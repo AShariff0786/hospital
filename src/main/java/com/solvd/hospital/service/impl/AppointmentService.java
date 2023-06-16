@@ -175,11 +175,11 @@ public class AppointmentService implements IAppointmentService {
     }
 
     @Override
-    public void serializeNurse(Nurse nurse, File file) {
+    public void serializeNurse(Nurse nurse, String file) {
         ObjectMapper objectMapper = new ObjectMapper().configure(SerializationFeature.WRAP_ROOT_VALUE, true);
         objectMapper.registerModule(new JavaTimeModule());
         try {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, nurse);
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File (file), nurse);
         } catch (IOException e) {
             LOGGER.error("File not found.");
             throw new RuntimeException(e);
@@ -187,12 +187,12 @@ public class AppointmentService implements IAppointmentService {
     }
 
     @Override
-    public Nurse deserializeNurse(File file) {
+    public Nurse deserializeNurse(String file) {
         Nurse nurse;
         ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
         objectMapper.registerModule(new JavaTimeModule());
         try {
-            nurse = objectMapper.readValue(file, Nurse.class);
+            nurse = objectMapper.readValue(new File(file), Nurse.class);
         } catch (IOException e) {
             LOGGER.error("File not found.");
             throw new RuntimeException(e);
@@ -201,11 +201,11 @@ public class AppointmentService implements IAppointmentService {
     }
 
     @Override
-    public void serializeDoctor(Doctor doctor, File file) {
+    public void serializeDoctor(Doctor doctor, String file) {
         ObjectMapper objectMapper = new ObjectMapper().configure(SerializationFeature.WRAP_ROOT_VALUE, true);
         objectMapper.registerModule(new JavaTimeModule());
         try {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, doctor);
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File (file), doctor);
         } catch (IOException e) {
             LOGGER.error("File not found.");
             throw new RuntimeException(e);
@@ -213,12 +213,12 @@ public class AppointmentService implements IAppointmentService {
     }
 
     @Override
-    public Doctor deserializeDoctor(File file) {
+    public Doctor deserializeDoctor(String file) {
         Doctor doctor;
         ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
         objectMapper.registerModule(new JavaTimeModule());
         try {
-            doctor = objectMapper.readValue(file, Doctor.class);
+            doctor = objectMapper.readValue(new File (file), Doctor.class);
         } catch (IOException e) {
             LOGGER.error("File not found.");
             throw new RuntimeException(e);
@@ -227,11 +227,11 @@ public class AppointmentService implements IAppointmentService {
     }
 
     @Override
-    public void serializePatient(Patient patient, File file) {
+    public void serializePatient(Patient patient, String file) {
         ObjectMapper objectMapper = new ObjectMapper().configure(SerializationFeature.WRAP_ROOT_VALUE, true);
         objectMapper.registerModule(new JavaTimeModule());
         try {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, patient);
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File (file), patient);
         } catch (IOException e) {
             LOGGER.error("File not found.");
             throw new RuntimeException(e);
@@ -239,12 +239,12 @@ public class AppointmentService implements IAppointmentService {
     }
 
     @Override
-    public Patient deserializePatient(File file) {
+    public Patient deserializePatient(String file) {
         Patient patient;
         ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
         objectMapper.registerModule(new JavaTimeModule());
         try {
-            patient = objectMapper.readValue(file, Patient.class);
+            patient = objectMapper.readValue(new File (file), Patient.class);
         } catch (IOException e) {
             LOGGER.error("File not found.");
             throw new RuntimeException(e);

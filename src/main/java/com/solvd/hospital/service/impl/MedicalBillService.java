@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.solvd.hospital.dao.impl.MedicalBillDao;
 import com.solvd.hospital.dao.IMedicalBillDao;
-import com.solvd.hospital.model.Doctor;
 import com.solvd.hospital.model.Insurance;
 import com.solvd.hospital.model.patient.MedicalBill;
 import com.solvd.hospital.model.patient.Patient;
@@ -71,11 +70,11 @@ public class MedicalBillService implements IMedicalBillService {
     }
 
     @Override
-    public void serializeInsurance(Insurance insurance, File file) {
+    public void serializeInsurance(Insurance insurance, String file) {
         ObjectMapper objectMapper = new ObjectMapper().configure(SerializationFeature.WRAP_ROOT_VALUE, true);
         objectMapper.registerModule(new JavaTimeModule());
         try {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, insurance);
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File (file), insurance);
         } catch (IOException e) {
             LOGGER.error("File not found.");
             throw new RuntimeException(e);
@@ -83,12 +82,12 @@ public class MedicalBillService implements IMedicalBillService {
     }
 
     @Override
-    public Insurance deserializeInsurance(File file) {
+    public Insurance deserializeInsurance(String file) {
         Insurance insurance;
         ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
         objectMapper.registerModule(new JavaTimeModule());
         try {
-            insurance = objectMapper.readValue(file, Insurance.class);
+            insurance = objectMapper.readValue(new File (file), Insurance.class);
         } catch (IOException e) {
             LOGGER.error("File not found.");
             throw new RuntimeException(e);

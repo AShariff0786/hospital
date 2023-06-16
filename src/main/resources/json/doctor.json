@@ -2,7 +2,7 @@
   "doctor" : {
     "id" : 4,
     "name" : "Jimmy",
-    "position" : "Physical Therapist",
+    "position" : "Neurologist",
     "department" : {
       "id" : 1,
       "name" : "Cardiology"

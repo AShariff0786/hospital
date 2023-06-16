@@ -4,9 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.solvd.hospital.Main;
-import com.solvd.hospital.model.Doctor;
-import com.solvd.hospital.model.Insurance;
 import com.solvd.hospital.model.patient.TreatmentData;
 import com.solvd.hospital.service.ITreatmentDataParsingService;
 import org.apache.logging.log4j.LogManager;
@@ -22,12 +19,12 @@ import java.io.IOException;
 public class TreatmentDataParsingService implements ITreatmentDataParsingService {
     private final static Logger LOGGER = LogManager.getLogger(TreatmentDataParsingService.class);
     @Override
-    public void marshalTreatmentData(TreatmentData treatmentData, File file) {
+    public void marshalTreatmentData(TreatmentData treatmentData, String file) {
         try {
             JAXBContext context = JAXBContext.newInstance(TreatmentData.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(treatmentData, file);
+            marshaller.marshal(treatmentData, new File (file));
         } catch (JAXBException e) {
             LOGGER.error("Error trying to marshal.");
             throw new RuntimeException(e);
@@ -35,12 +32,12 @@ public class TreatmentDataParsingService implements ITreatmentDataParsingService
     }
 
     @Override
-    public TreatmentData unmarshalTreatmentData(File file) {
+    public TreatmentData unmarshalTreatmentData(String file) {
         TreatmentData tdata;
         try {
             JAXBContext context = JAXBContext.newInstance(TreatmentData.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
-            tdata = (TreatmentData) unmarshaller.unmarshal(file);
+            tdata = (TreatmentData) unmarshaller.unmarshal(new File (file));
         } catch (JAXBException e) {
             LOGGER.error("Error trying to unmarshal.");
             throw new RuntimeException(e);
@@ -49,11 +46,11 @@ public class TreatmentDataParsingService implements ITreatmentDataParsingService
     }
 
     @Override
-    public void serializeTreatmentData(TreatmentData treatmentData, File file) {
+    public void serializeTreatmentData(TreatmentData treatmentData, String file) {
         ObjectMapper objectMapper = new ObjectMapper().configure(SerializationFeature.WRAP_ROOT_VALUE, true);
         objectMapper.registerModule(new JavaTimeModule());
         try {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(file,treatmentData);
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File (file) ,treatmentData);
         } catch (IOException e) {
             LOGGER.error("File not found.");
             throw new RuntimeException(e);
@@ -61,13 +58,13 @@ public class TreatmentDataParsingService implements ITreatmentDataParsingService
     }
 
     @Override
-    public TreatmentData deserializeTreatmentData(File file) {
+    public TreatmentData deserializeTreatmentData(String file) {
         TreatmentData treatmentData;
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
         try {
-            treatmentData = objectMapper.readValue(file, TreatmentData.class);
+            treatmentData = objectMapper.readValue(new File (file), TreatmentData.class);
         } catch (IOException e) {
             LOGGER.error("File not found.");
             throw new RuntimeException(e);

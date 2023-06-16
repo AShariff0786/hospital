@@ -2,7 +2,7 @@
   "nurse" : {
     "id" : 4,
     "name" : "Gabriela",
-    "position" : "Registered Nurse",
+    "position" : "Medical Assistant",
     "department" : {
       "id" : 2,
       "name" : "Radiology"

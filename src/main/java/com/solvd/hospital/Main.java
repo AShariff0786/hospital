@@ -24,6 +24,13 @@ public class Main {
         AppointmentService appointmentService = new AppointmentService();
         Doctor doctor = appointmentService.getDoctorInDB(1);
         LOGGER.info("Doctor: " + doctor.getId() + " " + doctor.getName());
+        Appointment appointment1 = appointmentService.getAppointmentInDB(1);
+        appointment1.setDoctor(doctor);
+        appointmentService.updateAppointmentInDB(appointment1);
+        appointment1.setDoctor(doctor);
+        appointment1.setId(2);
+        appointmentService.saveAppointmentToDB(appointment1);
+        Nurse nurse1 = appointmentService.getNurseInDB(1);
 
         //Checks if XML is valid
         StAXService stAXService = new StAXService();
@@ -38,6 +45,8 @@ public class Main {
         + " DepartmentID :" + temp.get(0).getDepartment().getId() + " " + temp.get(0).getDepartment().getName());
         LOGGER.info("Doctor Id: " + temp.get(1).getId() + " Name: " + temp.get(1).getName()+ " " + temp.get(1).getPosition()
                 + " DepartmentID :" + temp.get(1).getDepartment().getId() + " " + temp.get(1).getDepartment().getName());
+        temp.get(0).setPosition("Neurologist");
+        appointmentService.updateDoctorInDB(temp.get(0));
 
         ArrayList<Nurse> nurses =  stAXService.getNurseFromXML();
         nurses.forEach(stAXService::insertNurseFromXML);
@@ -45,13 +54,16 @@ public class Main {
                 + " DepartmentID :" + nurses.get(0).getDepartment().getId() + " " + nurses.get(0).getDepartment().getName());
         LOGGER.info("Nurse Id: " + nurses.get(1).getId() + " Name: " + nurses.get(1).getName()+ " " + nurses.get(1).getPosition()
                 + " DepartmentID :" + nurses.get(1).getDepartment().getId() + " " + nurses.get(1).getDepartment().getName());
-
+        nurses.get(0).setPosition("Medical Assistant");
+        appointmentService.updateNurseInDB(nurses.get(0));
 
         ArrayList<Patient> patients =  stAXService.getPatientFromXML();
         patients.forEach(stAXService::insertPatientFromXML);
         LOGGER.info("Patient Id: " + patients.get(0).getId() + " Name: " + patients.get(0).getName()+ " " + patients.get(0).getDoctor().getName()
                 + " Nurse Id:" + patients.get(0).getNurse().getName() + " " + patients.get(0).getChart().getDiagnosis()
                 + " " + patients.get(0).getInsurance().getName());
+        patients.get(0).setAddress("1111-111");
+        appointmentService.updatePatientInDB(patients.get(0));
 
 
         PatientMedicalChartService pmcService = new PatientMedicalChartService();
@@ -123,8 +135,8 @@ public class Main {
 
         //Marshaller with JAXB
         TreatmentDataParsingService tdataParsingService = new TreatmentDataParsingService();
-        File tDataXMLFile = new File("src/main/resources/xml/treatmentdata.xml");
-        File tDataFile = new File("src/main/resources/json/treatmentdata.json");
+        String tDataXMLFile = "src/main/resources/xml/treatmentdata.xml";
+        String tDataFile = "src/main/resources/json/treatmentdata.json";
         tdataParsingService.marshalTreatmentData(treatmentData, tDataXMLFile);
 
         //Unmarshaller with JAXB
@@ -133,10 +145,10 @@ public class Main {
             + tdata.getStartOfTreatment() + " " + tdata.getEndOfTreatment() + " " + tdata.getMedicalBill().getPatient().getName());
 
         //Serialize with Jackson
-        File docFile = new File("src/main/resources/json/doctor.json");
-        File nurseFile = new File("src/main/resources/json/nurse.json");
-        File patientFile = new File("src/main/resources/json/patient.json");
-        File insuranceFile = new File("src/main/resources/json/insurance.json");
+        String docFile = "src/main/resources/json/doctor.json";
+        String nurseFile = "src/main/resources/json/nurse.json";
+        String patientFile = "src/main/resources/json/patient.json";
+        String insuranceFile = "src/main/resources/json/insurance.json";
         tdataParsingService.serializeTreatmentData(tdata, tDataFile);
         appointmentService.serializeDoctor(temp.get(0), docFile);
         appointmentService.serializeNurse(nurses.get(0), nurseFile);

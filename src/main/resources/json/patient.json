@@ -2,7 +2,7 @@
   "patient" : {
     "id" : 4,
     "name" : "Jack",
-    "address" : "111-11 111St",
+    "address" : "1111-111",
     "phoneNumber" : "111-111-1111",
     "doctor" : {
       "id" : 1,

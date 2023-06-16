@@ -4,9 +4,6 @@ import com.solvd.hospital.model.Appointment;
 import com.solvd.hospital.model.Doctor;
 import com.solvd.hospital.model.Nurse;
 import com.solvd.hospital.model.patient.Patient;
-import com.solvd.hospital.model.patient.TreatmentData;
-
-import java.io.File;
 
 public interface IAppointmentService {
     void saveAppointmentToDB(Appointment appointment);
@@ -23,16 +20,16 @@ public interface IAppointmentService {
     Doctor getDoctorInDB(int id);
     Nurse getNurseInDB(int id);
 
-    void serializeNurse(Nurse nurse, File file);
+    void serializeNurse(Nurse nurse, String file);
 
-    Nurse deserializeNurse(File file);
+    Nurse deserializeNurse(String file);
 
-    void serializeDoctor(Doctor doctor, File file);
+    void serializeDoctor(Doctor doctor, String file);
 
-    Doctor deserializeDoctor(File file);
-    void serializePatient(Patient patient, File file);
+    Doctor deserializeDoctor(String file);
+    void serializePatient(Patient patient, String file);
 
-    Patient deserializePatient(File file);
+    Patient deserializePatient(String file);
 
 
 }
