@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<treatmentData>
+    <endOfTreatment>2023-05-12</endOfTreatment>
+    <medicalBill id="1">
+        <amountDue>1222.0</amountDue>
+        <patient id="1">
+            <name>Jim</name>
+            <address>123-122 122st</address>
+            <phoneNumber>123-123-1234</phoneNumber>
+            <doctor id="1">
+                <name>John</name>
+                <position>Surgeon</position>
+                <department id="1">
+                    <name>Cardiology</name>
+                </department>
+            </doctor>
+            <nurse id="1">
+                <name>Jane</name>
+                <position>Medical Assistant</position>
+                <department id="1">
+                    <name>Cardiology</name>
+                </department>
+            </nurse>
+            <insurance id="1">
+                <name>Medicare</name>
+            </insurance>
+            <chart id="1">
+                <diagnosis>Broken Hand</diagnosis>
+                <date>2023-01-01</date>
+            </chart>
+            <appointments>
+                <appointment id="1">
+                    <date>2023-05-12</date>
+                    <time>12:30</time>
+                </appointment>
+                <appointment id="2">
+                    <date>2026-01-01</date>
+                    <time>01:45</time>
+                </appointment>
+            </appointments>
+        </patient>
+        <insurance id="1">
+            <name>Medicare</name>
+        </insurance>
+    </medicalBill>
+    <startOfTreatment>2023-01-02</startOfTreatment>
+    <treatment id="1">
+        <name>Surgery</name>
+        <cost>123.11</cost>
+    </treatment>
+</treatmentData>

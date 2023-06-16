@@ -123,11 +123,12 @@ public class Main {
 
         //Marshaller with JAXB
         TreatmentDataParsingService tdataParsingService = new TreatmentDataParsingService();
-        File tDataFile = new File("src/main/resources/xml/treatmentdata.xml");
-        tdataParsingService.marshalTreatmentData(treatmentData, tDataFile);
+        File tDataXMLFile = new File("src/main/resources/xml/treatmentdata.xml");
+        File tDataFile = new File("src/main/resources/json/treatmentdata.json");
+        tdataParsingService.marshalTreatmentData(treatmentData, tDataXMLFile);
 
         //Unmarshaller with JAXB
-        TreatmentData tdata = tdataParsingService.unmarshalTreatmentData(tDataFile);
+        TreatmentData tdata = tdataParsingService.unmarshalTreatmentData(tDataXMLFile);
         LOGGER.info("Unmarshaller test: " + tdata.getTreatment().getName() + " " + tdata.getTreatment().getCost()
             + tdata.getStartOfTreatment() + " " + tdata.getEndOfTreatment() + " " + tdata.getMedicalBill().getPatient().getName());
 
