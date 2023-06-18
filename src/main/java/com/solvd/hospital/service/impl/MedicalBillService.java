@@ -69,29 +69,5 @@ public class MedicalBillService implements IMedicalBillService {
         }
     }
 
-    @Override
-    public void serializeInsurance(Insurance insurance, String file) {
-        ObjectMapper objectMapper = new ObjectMapper().configure(SerializationFeature.WRAP_ROOT_VALUE, true);
-        objectMapper.registerModule(new JavaTimeModule());
-        try {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File (file), insurance);
-        } catch (IOException e) {
-            LOGGER.error("File not found.");
-            throw new RuntimeException(e);
-        }
-    }
 
-    @Override
-    public Insurance deserializeInsurance(String file) {
-        Insurance insurance;
-        ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
-        objectMapper.registerModule(new JavaTimeModule());
-        try {
-            insurance = objectMapper.readValue(new File (file), Insurance.class);
-        } catch (IOException e) {
-            LOGGER.error("File not found.");
-            throw new RuntimeException(e);
-        }
-        return insurance;
-    }
 }

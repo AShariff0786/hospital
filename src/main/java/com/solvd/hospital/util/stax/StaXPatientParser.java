@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 public class StaXPatientParser {
     private final static Logger LOGGER = LogManager.getLogger(StaXPatientParser.class);
-    public ArrayList<Patient> parse(){
+    public ArrayList<Patient> parse(String path){
         ArrayList<Patient> patients = new ArrayList<>();
         Department docDepartment = new Department();
         Department nurseDepartment = new Department();
@@ -37,7 +37,7 @@ public class StaXPatientParser {
         XMLEventReader reader = null;
 
 
-        try (FileInputStream input = new FileInputStream("src/main/resources/xml/patients.xml");) {
+        try (FileInputStream input = new FileInputStream(path);) {
             reader = XMLInputFactory.newInstance().createXMLEventReader(input);
             Patient patient = null;
             while(reader.hasNext()){

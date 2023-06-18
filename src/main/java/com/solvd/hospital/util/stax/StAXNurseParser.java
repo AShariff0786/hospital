@@ -20,12 +20,12 @@ import java.util.ArrayList;
 
 public class StAXNurseParser {
     private final static Logger LOGGER = LogManager.getLogger(StAXNurseParser.class);
-    public ArrayList<Nurse> parse(){
+    public ArrayList<Nurse> parse(String path){
         ArrayList<Nurse> nurses = new ArrayList<>();
         Department department = new Department();
         XMLEventReader reader = null;
 
-        try (FileInputStream input = new FileInputStream("src/main/resources/xml/nurses.xml");){
+        try (FileInputStream input = new FileInputStream(path);){
             reader = XMLInputFactory.newInstance().createXMLEventReader(input);
             Nurse nurse = null;
             while(reader.hasNext()){

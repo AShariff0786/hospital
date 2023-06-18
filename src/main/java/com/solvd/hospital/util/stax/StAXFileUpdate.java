@@ -10,12 +10,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -29,9 +27,8 @@ import java.util.stream.IntStream;
 
 public class StAXFileUpdate {
     private final static Logger LOGGER = LogManager.getLogger(StAXFileUpdate.class);
-    public void updateDoctor(Doctor doctor) {
-        String filePath = "src/main/resources/xml/doctors.xml";
-        File xmlFile = new File(filePath);
+    public void updateDoctor(Doctor doctor, String path) {
+        File xmlFile = new File(path);
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder;
         try {
@@ -46,15 +43,14 @@ public class StAXFileUpdate {
             updateDoctorElementValue(doc, doctor);
 
             // write the updated document to file or console
-            writeXMLFile(doc, filePath);
+            writeXMLFile(doc, path);
 
         } catch (SAXException | ParserConfigurationException | IOException e1) {
             e1.printStackTrace();
         }
     }
-    public void updateNurse(Nurse nurse) {
-        String filePath = "src/main/resources/xml/nurses.xml";
-        File xmlFile = new File(filePath);
+    public void updateNurse(Nurse nurse, String path) {
+        File xmlFile = new File(path);
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder;
         try {
@@ -69,15 +65,14 @@ public class StAXFileUpdate {
             updateNurseElementValue(doc, nurse);
 
             // write the updated document to file or console
-            writeXMLFile(doc, filePath);
+            writeXMLFile(doc, path);
 
         } catch (SAXException | ParserConfigurationException | IOException e1) {
             e1.printStackTrace();
         }
     }
-    public void updatePatient(Patient patient) {
-        String filePath = "src/main/resources/xml/patients.xml";
-        File xmlFile = new File(filePath);
+    public void updatePatient(Patient patient, String path) {
+        File xmlFile = new File(path);
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder;
         try {
@@ -92,7 +87,7 @@ public class StAXFileUpdate {
             updatePatientElementValue(doc, patient);
 
             // write the updated document to file or console
-            writeXMLFile(doc, filePath);
+            writeXMLFile(doc, path);
 
         } catch (SAXException | ParserConfigurationException | IOException e1) {
             e1.printStackTrace();

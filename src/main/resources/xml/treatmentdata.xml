@@ -8,7 +8,7 @@
             <address>123-122 122st</address>
             <phoneNumber>123-123-1234</phoneNumber>
             <doctor id="1">
-                <name>John</name>
+                <name>Melo</name>
                 <position>Surgeon</position>
                 <department id="1">
                     <name>Cardiology</name>

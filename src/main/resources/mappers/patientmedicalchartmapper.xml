@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solvd.hospital.db.mappers.PatientMedicalChartMapper">
+    <resultMap id="pmcResultMap" type="com.solvd.hospital.model.patient.PatientMedicalChart">
+        <id property="id" column="pmc_id"/>
+        <result property="diagnosis" column="pmc_diagnosis"/>
+        <result property="date" column="pmc_date"/>
+    </resultMap>
+</mapper>

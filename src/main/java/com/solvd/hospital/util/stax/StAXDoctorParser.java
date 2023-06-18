@@ -20,11 +20,11 @@ import java.util.ArrayList;
 
 public class StAXDoctorParser {
     private final static Logger LOGGER = LogManager.getLogger(StAXDoctorParser.class);
-    public ArrayList<Doctor> parse(){
+    public ArrayList<Doctor> parse(String path){
         ArrayList<Doctor> doctors = new ArrayList<>();
         Department department = new Department();
         XMLEventReader reader = null;
-        try(FileInputStream input = new FileInputStream("src/main/resources/xml/doctors.xml");) {
+        try(FileInputStream input = new FileInputStream(path);) {
             reader = XMLInputFactory.newInstance().createXMLEventReader(input);
             Doctor doctor = null;
             while(reader.hasNext()){

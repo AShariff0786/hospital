@@ -1,46 +1,77 @@
 package com.solvd.hospital;
 
 
-import com.solvd.hospital.model.*;
+import com.solvd.hospital.model.Appointment;
+import com.solvd.hospital.model.Department;
+import com.solvd.hospital.model.Doctor;
+import com.solvd.hospital.model.Insurance;
+import com.solvd.hospital.model.Nurse;
+import com.solvd.hospital.model.Treatment;
 import com.solvd.hospital.model.patient.MedicalBill;
 import com.solvd.hospital.model.patient.Patient;
 import com.solvd.hospital.model.patient.PatientMedicalChart;
 import com.solvd.hospital.model.patient.TreatmentData;
 import com.solvd.hospital.service.IMedicalBillService;
-import com.solvd.hospital.service.impl.*;
+import com.solvd.hospital.service.impl.AppointmentService;
+import com.solvd.hospital.service.impl.JAXBService;
+import com.solvd.hospital.service.impl.JacksonService;
+import com.solvd.hospital.service.impl.MedicalBillService;
+import com.solvd.hospital.service.impl.PatientMedicalChartService;
+import com.solvd.hospital.service.impl.StAXService;
+import com.solvd.hospital.util.PropertiesUtil;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 public class Main {
     private final static Logger LOGGER = LogManager.getLogger(Main.class);
+    private final static String docFile = "src/main/resources/json/doctor.json";
+    private final static String docXMLFile = "src/main/resources/xml/doctors.xml";
+    private final static String docXSDFile = "src/main/resources/xsd/doctors.xsd";
+    private final static String nurseFile = "src/main/resources/json/nurse.json";
+    private final static String nurseXMLFile = "src/main/resources/xml/nurses.xml";
+    private final static String nurseXSDFile = "src/main/resources/xsd/nurses.xsd";
+    private final static String patientFile = "src/main/resources/json/patient.json";
+    private final static String patientXMLFile = "src/main/resources/xml/patients.xml";
+    private final static String patientXSDFile = "src/main/resources/xsd/patients.xsd";
+    private final static String insuranceFile = "src/main/resources/json/insurance.json";
+    private final static String tDataXMLFile = "src/main/resources/xml/treatmentdata.xml";
+    private final static String tDataFile = "src/main/resources/json/treatmentdata.json";
+    private final static String mybatisConfig = "mybatis_config.xml";
     public static void main(String[] args) {
         AppointmentService appointmentService = new AppointmentService();
         Doctor doctor = appointmentService.getDoctorInDB(1);
         LOGGER.info("Doctor: " + doctor.getId() + " " + doctor.getName());
-        Appointment appointment1 = appointmentService.getAppointmentInDB(1);
+        /*Appointment appointment1 = appointmentService.getAppointmentInDB(1);
         appointment1.setDoctor(doctor);
         appointmentService.updateAppointmentInDB(appointment1);
         appointment1.setDoctor(doctor);
         appointment1.setId(2);
         appointmentService.saveAppointmentToDB(appointment1);
         Nurse nurse1 = appointmentService.getNurseInDB(1);
-
+*/
         //Checks if XML is valid
         StAXService stAXService = new StAXService();
-        stAXService.validate("src/main/resources/xml/doctors.xml", "src/main/resources/xsd/doctors.xsd");
-        stAXService.validate("src/main/resources/xml/nurses.xml", "src/main/resources/xsd/nurses.xsd");
-        stAXService.validate("src/main/resources/xml/patients.xml", "src/main/resources/xsd/patients.xsd");
+        stAXService.validate(docXMLFile, docXSDFile);
+        stAXService.validate(nurseXMLFile, nurseXSDFile);
+        stAXService.validate(patientXMLFile, patientXSDFile);
 
         //Parses XML File
-        ArrayList<Doctor> temp =  stAXService.getDoctorFromXML();
-        temp.forEach(stAXService::insertDoctorFromXML);
+        ArrayList<Doctor> temp =  stAXService.getDoctorFromXML(docXMLFile);
+        //temp.forEach(stAXService::insertDoctorFromXML);
         LOGGER.info("Doctor Id: " + temp.get(0).getId() + " Name: " + temp.get(0).getName()+ " " + temp.get(0).getPosition()
         + " DepartmentID :" + temp.get(0).getDepartment().getId() + " " + temp.get(0).getDepartment().getName());
         LOGGER.info("Doctor Id: " + temp.get(1).getId() + " Name: " + temp.get(1).getName()+ " " + temp.get(1).getPosition()
@@ -48,8 +79,8 @@ public class Main {
         temp.get(0).setPosition("Neurologist");
         appointmentService.updateDoctorInDB(temp.get(0));
 
-        ArrayList<Nurse> nurses =  stAXService.getNurseFromXML();
-        nurses.forEach(stAXService::insertNurseFromXML);
+        ArrayList<Nurse> nurses =  stAXService.getNurseFromXML(nurseXMLFile);
+        //nurses.forEach(stAXService::insertNurseFromXML);
         LOGGER.info("Nurse Id: " + nurses.get(0).getId() + " Name: " + nurses.get(0).getName()+ " " + nurses.get(0).getPosition()
                 + " DepartmentID :" + nurses.get(0).getDepartment().getId() + " " + nurses.get(0).getDepartment().getName());
         LOGGER.info("Nurse Id: " + nurses.get(1).getId() + " Name: " + nurses.get(1).getName()+ " " + nurses.get(1).getPosition()
@@ -57,8 +88,8 @@ public class Main {
         nurses.get(0).setPosition("Medical Assistant");
         appointmentService.updateNurseInDB(nurses.get(0));
 
-        ArrayList<Patient> patients =  stAXService.getPatientFromXML();
-        patients.forEach(stAXService::insertPatientFromXML);
+        ArrayList<Patient> patients =  stAXService.getPatientFromXML(patientXMLFile);
+        //patients.forEach(stAXService::insertPatientFromXML);
         LOGGER.info("Patient Id: " + patients.get(0).getId() + " Name: " + patients.get(0).getName()+ " " + patients.get(0).getDoctor().getName()
                 + " Nurse Id:" + patients.get(0).getNurse().getName() + " " + patients.get(0).getChart().getDiagnosis()
                 + " " + patients.get(0).getInsurance().getName());
@@ -89,7 +120,7 @@ public class Main {
         Doctor test = new Doctor(4);
         test.setName("Jimmy");
         test.setPosition("Physical Therapist");
-        stAXService.updateDoctorInXML(test);
+        //stAXService.updateDoctorInXML(test, docXMLFile);
 
         MedicalBill medicalBill = medicalBillService.getMedicalBillInDB(1);
         Treatment treatment = new Treatment(1, "Surgery");
@@ -134,38 +165,55 @@ public class Main {
 
 
         //Marshaller with JAXB
-        TreatmentDataParsingService tdataParsingService = new TreatmentDataParsingService();
-        String tDataXMLFile = "src/main/resources/xml/treatmentdata.xml";
-        String tDataFile = "src/main/resources/json/treatmentdata.json";
-        tdataParsingService.marshalTreatmentData(treatmentData, tDataXMLFile);
+        JAXBService<TreatmentData> tdataParsingService = new JAXBService<>();
+        tdataParsingService.marshal(treatmentData, tDataXMLFile, TreatmentData.class.getName());
+
 
         //Unmarshaller with JAXB
-        TreatmentData tdata = tdataParsingService.unmarshalTreatmentData(tDataXMLFile);
+        TreatmentData tdata = tdataParsingService.unmarshal(tDataXMLFile, TreatmentData.class.getName());
+
         LOGGER.info("Unmarshaller test: " + tdata.getTreatment().getName() + " " + tdata.getTreatment().getCost()
-            + tdata.getStartOfTreatment() + " " + tdata.getEndOfTreatment() + " " + tdata.getMedicalBill().getPatient().getName());
+           + tdata.getStartOfTreatment() + " " + tdata.getEndOfTreatment() + " " + tdata.getMedicalBill().getPatient().getName());
 
         //Serialize with Jackson
-        String docFile = "src/main/resources/json/doctor.json";
-        String nurseFile = "src/main/resources/json/nurse.json";
-        String patientFile = "src/main/resources/json/patient.json";
-        String insuranceFile = "src/main/resources/json/insurance.json";
-        tdataParsingService.serializeTreatmentData(tdata, tDataFile);
-        appointmentService.serializeDoctor(temp.get(0), docFile);
-        appointmentService.serializeNurse(nurses.get(0), nurseFile);
-        appointmentService.serializePatient(patients.get(0), patientFile);
-        medicalBillService.serializeInsurance(patients.get(0).getInsurance(), insuranceFile);
+        JacksonService<TreatmentData> tdataJackson = new JacksonService<>();
+        tdataJackson.serialize(tdata, tDataFile);
+        JacksonService<Doctor> doctorJacksonService = new JacksonService<>();
+        JacksonService<Nurse> nurseJacksonService = new JacksonService<>();
+        JacksonService<Patient> patientJacksonService = new JacksonService<>();
+        JacksonService<Insurance> insuranceJacksonService = new JacksonService<>();
+        doctorJacksonService.serialize(temp.get(0), docFile);
+        nurseJacksonService.serialize(nurses.get(0), nurseFile);
+        patientJacksonService.serialize(patients.get(0), patientFile);
+        insuranceJacksonService.serialize(patients.get(0).getInsurance(), insuranceFile);
 
         //Deserialize with Jackson
-        Insurance insurance = medicalBillService.deserializeInsurance(insuranceFile);
-        Doctor doc = appointmentService.deserializeDoctor(docFile);
-        TreatmentData tdata2 = tdataParsingService.deserializeTreatmentData(tDataFile);
-        Patient patient2 = appointmentService.deserializePatient(patientFile);
-        Nurse nurse2 = appointmentService.deserializeNurse(nurseFile);
+        Insurance insurance = insuranceJacksonService.deserialize(insuranceFile, Insurance.class.getName());
+        Doctor doc = doctorJacksonService.deserialize(docFile, Doctor.class.getName());
+        TreatmentData tdata2 = tdataJackson.deserialize(tDataFile,  TreatmentData.class.getName());
+        Patient patient2 = patientJacksonService.deserialize(patientFile, Patient.class.getName());
+        Nurse nurse2 = nurseJacksonService.deserialize(nurseFile, Nurse.class.getName());
         LOGGER.info("Deserializtion with Jackson on Insurance: " + insurance.getId() + " " +insurance.getName() );
         LOGGER.info("Deserializtion with Jackson on Doctor: " + doc.getId() + " " +doc.getName() );
         LOGGER.info("Deserializtion with Jackson on Patient: " + patient2.getId() + " " +patient2.getName() );
         LOGGER.info("Deserializtion with Jackson on Nurse: " + nurse2.getId() + " " +nurse2.getName() );
         LOGGER.info("Deserializtion with Jackson on TreatmentData: " + tdata2.getStartOfTreatment() + " " +tdata2.getEndOfTreatment() );
+
+        com.solvd.hospital.service.mybatisimpl.AppointmentService appbatis = new com.solvd.hospital.service.mybatisimpl.AppointmentService();
+        Doctor doctor1 = appbatis.getDoctorInDB(1);
+        LOGGER.info("MAPPER: " + doctor1.getName() + " " +doctor1.getId() + " " + doctor1.getPosition() +
+                " " + doctor1.getDepartment().getName());
+        doctor1.setName("Melo");
+        appbatis.updateDoctorInDB(doctor1);
+        doctor1.setId(12);
+        appbatis.saveDoctorToDB(doctor1);
+        appbatis.deleteDoctorInDB(12);
+
+        Patient patient = appbatis.getPatientInDB(1);
+        LOGGER.info("MAPPER: " + patient.getName()  + " " + patient.getAddress() + " " + patient.getPhoneNumber()
+                + " " +patient.getDoctor().getName() + " "+ patient.getDoctor().getDepartment().getName()+ " "
+                + patient.getNurse().getName() + " " + patient.getNurse().getDepartment().getName() +
+                " "  + patient.getInsurance().getName() + " " + patient.getChart().getDiagnosis());
 
     }
 }

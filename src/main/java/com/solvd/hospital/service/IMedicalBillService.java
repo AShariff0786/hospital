@@ -13,7 +13,4 @@ public interface IMedicalBillService {
     MedicalBill getMedicalBillInDB(int id);
     void updateMedicalBillInDB(MedicalBill medicalBill);
 
-    void serializeInsurance(Insurance insurance, String file);
-
-    Insurance deserializeInsurance(String file);
 }

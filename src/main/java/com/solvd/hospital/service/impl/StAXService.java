@@ -29,21 +29,21 @@ public class StAXService implements IStAXService {
     private final static Logger LOGGER = LogManager.getLogger(StAXService.class);
 
     @Override
-    public ArrayList<Doctor> getDoctorFromXML() {
+    public ArrayList<Doctor> getDoctorFromXML(String path) {
         StAXDoctorParser stAXParser = new StAXDoctorParser();
-        return stAXParser.parse();
+        return stAXParser.parse(path);
     }
 
     @Override
-    public ArrayList<Nurse> getNurseFromXML() {
+    public ArrayList<Nurse> getNurseFromXML(String path) {
         StAXNurseParser stAXNurseParser = new StAXNurseParser();
-        return stAXNurseParser.parse();
+        return stAXNurseParser.parse(path);
     }
 
     @Override
-    public ArrayList<Patient> getPatientFromXML() {
+    public ArrayList<Patient> getPatientFromXML(String path) {
         StaXPatientParser staXPatientParser = new StaXPatientParser();
-        return staXPatientParser.parse();
+        return staXPatientParser.parse(path);
     }
 
     @Override
@@ -80,10 +80,10 @@ public class StAXService implements IStAXService {
     }
 
     @Override
-    public void updatePatientInXML(Patient patient){
+    public void updatePatientInXML(Patient patient, String path){
         if(patient != null) {
             StAXFileUpdate stAXFileUpdate = new StAXFileUpdate();
-            stAXFileUpdate.updatePatient(patient);
+            stAXFileUpdate.updatePatient(patient, path);
         }else{
             LOGGER.error("Patient object is null.");
             throw new NullPointerException();
@@ -91,10 +91,10 @@ public class StAXService implements IStAXService {
     }
 
     @Override
-    public void updateDoctorInXML(Doctor doctor){
+    public void updateDoctorInXML(Doctor doctor, String path){
         if(doctor !=null) {
             StAXFileUpdate stAXFileUpdate = new StAXFileUpdate();
-            stAXFileUpdate.updateDoctor(doctor);
+            stAXFileUpdate.updateDoctor(doctor, path);
         }else{
             LOGGER.error("Doctor object is null.");
             throw new NullPointerException();
@@ -102,10 +102,10 @@ public class StAXService implements IStAXService {
     }
 
     @Override
-    public void updateNurseInXML(Nurse nurse){
+    public void updateNurseInXML(Nurse nurse, String path){
         if(nurse != null) {
             StAXFileUpdate stAXFileUpdate = new StAXFileUpdate();
-            stAXFileUpdate.updateNurse(nurse);
+            stAXFileUpdate.updateNurse(nurse, path);
         }else{
             LOGGER.error("Nurse object is null.");
             throw new NullPointerException();

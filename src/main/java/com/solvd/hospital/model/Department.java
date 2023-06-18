@@ -25,6 +25,9 @@ public class Department {
     private List<Nurse> nurses;
 
     public Department(){}
+    public Department(int id){
+        this.id = id;
+    }
     public Department (int id, String name){
         this. id = id;
         this.name = name;

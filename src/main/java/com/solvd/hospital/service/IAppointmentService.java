@@ -20,16 +20,9 @@ public interface IAppointmentService {
     Doctor getDoctorInDB(int id);
     Nurse getNurseInDB(int id);
 
-    void serializeNurse(Nurse nurse, String file);
-
-    Nurse deserializeNurse(String file);
-
-    void serializeDoctor(Doctor doctor, String file);
-
-    Doctor deserializeDoctor(String file);
-    void serializePatient(Patient patient, String file);
-
-    Patient deserializePatient(String file);
-
+    void deleteDoctorInDB(int id);
+    void deletePatientInDB(int id);
+    void deleteNurseInDB(int id);
+    void deleteAppointmentInDB(int id);
 
 }

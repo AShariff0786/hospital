@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solvd.hospital.db.mapper.DoctorMapper">
+    <select id="selectDoctorById" resultMap="doctorResultMap">
+        SELECT D.name as doc_name, D.employeeId as doc_id, D.position as doc_position,
+        Dep.id as dep_id, Dep.name as dep_name
+        FROM Doctor D
+        JOIN Departments Dep ON D.Departments_id = Dep.id
+        WHERE D.employeeId = #{id}
+    </select>
+    <update id="updateDoctor">
+        UPDATE Doctor SET name=#{name}, position=#{position} WHERE employeeId=#{id}
+    </update>
+    <delete id="deleteDoctorById">
+        DELETE FROM Doctor WHERE employeeId = #{id}
+    </delete>
+    <insert id="saveDoctorToDB">
+        INSERT INTO Doctor (employeeId, name, position, Departments_id)
+        VALUES (#{id},#{name},#{position},#{department.id})
+    </insert>
+    <resultMap id="doctorResultMap" type="com.solvd.hospital.model.Doctor">
+        <id property="id" column="doc_id"/>
+        <result property="name" column="doc_name"/>
+        <result property="position" column="doc_position"/>
+        <collection property="department" resultMap="com.solvd.hospital.db.mappers.DepartmentMapper.DepResultMap"/>
+    </resultMap>
+</mapper>
