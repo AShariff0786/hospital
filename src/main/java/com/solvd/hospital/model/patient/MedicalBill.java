@@ -3,20 +3,22 @@ package com.solvd.hospital.model.patient;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.solvd.hospital.model.Insurance;
-import com.solvd.hospital.model.Lab;
-import com.solvd.hospital.model.Treatment;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
-import javax.xml.bind.annotation.*;
 
 @JsonRootName(value = "medicalBill")
 @XmlRootElement(name = "medicalBill")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MedicalBill {
     @JsonProperty(value = "id")
-    @XmlAttribute (name = "id" )
+    @XmlAttribute(name = "id" )
     private int id;
     @JsonProperty(value = "amountDue")
-    @XmlElement (name = "amountDue")
+    @XmlElement(name = "amountDue")
     private double amountDue;
     @JsonProperty(value = "patient")
     @XmlElement (name = "patient")

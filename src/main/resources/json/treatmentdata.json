@@ -7,7 +7,7 @@
       "amountDue" : 1222.0,
       "patient" : {
         "id" : 1,
-        "name" : "Jim",
+        "name" : "Bron",
         "address" : "123-122 122st",
         "phoneNumber" : "123-123-1234",
         "doctor" : {
@@ -21,7 +21,7 @@
         },
         "nurse" : {
           "id" : 1,
-          "name" : "Jane",
+          "name" : "Emily",
           "position" : "Medical Assistant",
           "department" : {
             "id" : 1,

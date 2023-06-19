@@ -7,15 +7,18 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import com.solvd.hospital.model.patient.Patient;
 import com.solvd.hospital.util.CustomDateAdapter;
 import com.solvd.hospital.util.CustomTimeAdapter;
-
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalTime;
 import java.util.Date;
 
 @JsonRootName(value = "appointment")
-@XmlAccessorType (XmlAccessType.FIELD)
-@XmlRootElement (name = "appointment")
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "appointment")
 public class Appointment {
     @JsonProperty(value = "id")
     @XmlAttribute

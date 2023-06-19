@@ -1,20 +1,25 @@
 package com.solvd.hospital.model;
 
-import com.fasterxml.jackson.annotation.*;
 
-import javax.xml.bind.annotation.*;
-
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @JsonRootName(value = "insurance")
 @JsonIncludeProperties({"id", "name"})
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement (name = "insurance")
+@XmlRootElement(name = "insurance")
 public class Insurance {
     @JsonProperty(value = "id")
     @XmlAttribute
     private int id;
     @JsonProperty(value = "name")
-    @XmlElement (name = "name")
+    @XmlElement(name = "name")
     private String name;
 
     public Insurance(){}

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solvd.hospital.db.mapper.MedicalBillMapper">
+    <select id="selectMedicalBillById" resultMap="medicalBillResultMap">
+        SELECT MB.id as medical_bill_id, MB.amountDue as medical_bill_amount,
+        P.id as patient_id, P.name as patient_name, P.address as patient_address,
+        P.phoneNumber as patient_number, D.name as doc_name, D.employeeId as doc_id, D.position as doc_position,
+        Dep.id as dep_id, Dep.name as dep_name, N.name as nur_name, N.employeeId as nur_id,
+        N.position as nur_position, I.id as insurance_id, I.name as insurance_name,
+        PMC.reportId as pmc_id, PMC.diagnosis as pmc_diagnosis, PMC.dateVisted as pmc_date
+        FROM MedicalBill MB
+        JOIN Patient P ON MB.Patient_id = P.id
+        JOIN Doctor D ON P.Doctor_employeeId = D.employeeId
+        JOIN Nurse N ON P.Nurse_employeeId = N.employeeId
+        JOIN Departments Dep ON D.Departments_id = Dep.id OR N.Departments_id = Dep.id
+        JOIN Insurance I ON P.Insurance_id = I.id
+        JOIN PatientMedicalChart PMC ON PMC.reportId = P.PatientMedicalChart_reportId
+        WHERE MB.id=#{id}
+    </select>
+    <update id="updateMedicalBill">
+        UPDATE MedicalBill SET amountDue=#{amountDue} WHERE id=#{id}
+    </update>
+    <delete id="deleteMedicalBillById">
+        DELETE FROM MedicalBill WHERE id = #{id}
+    </delete>
+    <insert id="saveMedicalBillToDB">
+        INSERT INTO MedicalBill (amountDue, Patient_id, Insurance_id, id)
+        VALUES (#{amountDue} , #{patient.id}, #{insurance.id}, #{id})
+    </insert>
+    <resultMap id="medicalBillResultMap" type="com.solvd.hospital.model.patient.MedicalBill">
+        <id property="id" column="medical_bill_id"/>
+        <result property="amountDue" column="medical_bill_amount"/>
+        <collection property="patient" resultMap="com.solvd.hospital.db.mapper.PatientMapper.patientResultMap"/>
+        <collection property="insurance" resultMap="com.solvd.hospital.db.mappers.InsuranceMapper.insuranceResultMap"/>
+    </resultMap>
+</mapper>

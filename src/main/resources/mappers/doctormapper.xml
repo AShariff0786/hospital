@@ -18,7 +18,7 @@
     </delete>
     <insert id="saveDoctorToDB">
         INSERT INTO Doctor (employeeId, name, position, Departments_id)
-        VALUES (#{id},#{name},#{position},#{department.id})
+        VALUES (#{id}, #{name} , #{position} ,#{department.id})
     </insert>
     <resultMap id="doctorResultMap" type="com.solvd.hospital.model.Doctor">
         <id property="id" column="doc_id"/>

@@ -2,10 +2,17 @@ package com.solvd.hospital.model.patient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
-import com.solvd.hospital.model.*;
-
-import javax.xml.bind.annotation.*;
+import com.solvd.hospital.model.Appointment;
+import com.solvd.hospital.model.Doctor;
+import com.solvd.hospital.model.Insurance;
+import com.solvd.hospital.model.Nurse;
+import com.solvd.hospital.model.User;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @JsonRootName(value = "patient")
 @XmlAccessorType (XmlAccessType.FIELD)

@@ -8,8 +8,12 @@ import com.solvd.hospital.model.patient.Patient;
 import com.solvd.hospital.util.ConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Time;
 
-import java.sql.*;
 
 public class AppointmentDao implements IAppointmentDao {
     private final static Logger LOGGER = LogManager.getLogger(AppointmentDao.class);

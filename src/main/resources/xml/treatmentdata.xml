@@ -4,7 +4,7 @@
     <medicalBill id="1">
         <amountDue>1222.0</amountDue>
         <patient id="1">
-            <name>Jim</name>
+            <name>Bron</name>
             <address>123-122 122st</address>
             <phoneNumber>123-123-1234</phoneNumber>
             <doctor id="1">
@@ -15,7 +15,7 @@
                 </department>
             </doctor>
             <nurse id="1">
-                <name>Jane</name>
+                <name>Emily</name>
                 <position>Medical Assistant</position>
                 <department id="1">
                     <name>Cardiology</name>

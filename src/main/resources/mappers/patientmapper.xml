@@ -15,18 +15,17 @@
         JOIN Departments Dep ON D.Departments_id = Dep.id OR N.Departments_id = Dep.id
         JOIN Insurance I ON P.Insurance_id = I.id
         JOIN PatientMedicalChart PMC ON PMC.reportId = P.PatientMedicalChart_reportId
-        WHERE P.id= ${id}
+        WHERE P.id= #{id}
     </select>
     <update id="updatePatient">
-        UPDATE Patient SET name=${name}, address=${address}, phoneNumber=${phoneNumber} WHERE id=${id}
+        UPDATE Patient SET name=#{name}, address=#{address}, phoneNumber=#{phoneNumber} WHERE id=#{id}
     </update>
     <delete id="deletePatientById">
         DELETE FROM Patient WHERE id = #{id}
     </delete>
     <insert id="savePatientToDB">
-        INSERT INTO Patient (name, Doctor_employeeId, PatientMedicalChart_reportId,
-        Nurse_employeeId, Insurance_id, id, address, phoneNumber)
-        VALUES (${name}, ${doctor.id}, ${chart.id}, ${nurse.id}, ${insurance.id}, ${id}, ${address}, ${phoneNumber})
+        INSERT INTO Patient (name, Doctor_employeeId, PatientMedicalChart_reportId, Nurse_employeeId, Insurance_id, id, address, phoneNumber)
+        VALUES (#{name}, #{doctor.id}, #{chart.id}, #{nurse.id}, #{insurance.id}, #{id}, #{address}, #{phoneNumber})
     </insert>
     <resultMap id="patientResultMap" type="com.solvd.hospital.model.patient.Patient">
         <id property="id" column="patient_id"/>

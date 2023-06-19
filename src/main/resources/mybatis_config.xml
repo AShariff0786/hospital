@@ -21,5 +21,7 @@
     <mapper resource="mappers/patientmapper.xml"/>
     <mapper resource="mappers/patientmedicalchartmapper.xml"/>
     <mapper resource="mappers/insurancemapper.xml"/>
+    <mapper resource="mappers/appointmentmapper.xml"/>
+    <mapper resource="mappers/medicalbillmapper.xml"/>
 </mappers>
 </configuration>
