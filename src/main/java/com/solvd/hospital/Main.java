@@ -62,7 +62,7 @@ public class Main {
 
         //Parses XML File
         ArrayList<Doctor> temp =  stAXService.getDoctorFromXML(DOC_XML_FILE);
-        //temp.forEach(stAXService::insertDoctorFromXML);
+        temp.forEach(stAXService::insertDoctorFromXML);
         LOGGER.info("Doctor Id: " + temp.get(0).getId() + " Name: " + temp.get(0).getName()+ " " + temp.get(0).getPosition()
         + " DepartmentID :" + temp.get(0).getDepartment().getId() + " " + temp.get(0).getDepartment().getName());
         LOGGER.info("Doctor Id: " + temp.get(1).getId() + " Name: " + temp.get(1).getName()+ " " + temp.get(1).getPosition()
@@ -71,7 +71,7 @@ public class Main {
         appointmentService.updateDoctorInDB(temp.get(0));
 
         ArrayList<Nurse> nurses =  stAXService.getNurseFromXML(NURSE_XML_FILE);
-        //nurses.forEach(stAXService::insertNurseFromXML);
+        nurses.forEach(stAXService::insertNurseFromXML);
         LOGGER.info("Nurse Id: " + nurses.get(0).getId() + " Name: " + nurses.get(0).getName()+ " " + nurses.get(0).getPosition()
                 + " DepartmentID :" + nurses.get(0).getDepartment().getId() + " " + nurses.get(0).getDepartment().getName());
         LOGGER.info("Nurse Id: " + nurses.get(1).getId() + " Name: " + nurses.get(1).getName()+ " " + nurses.get(1).getPosition()
@@ -80,7 +80,7 @@ public class Main {
         appointmentService.updateNurseInDB(nurses.get(0));
 
         ArrayList<Patient> patients =  stAXService.getPatientFromXML(PATIENT_XML_FILE);
-        //patients.forEach(stAXService::insertPatientFromXML);
+        patients.forEach(stAXService::insertPatientFromXML);
         LOGGER.info("Patient Id: " + patients.get(0).getId() + " Name: " + patients.get(0).getName()+ " " + patients.get(0).getDoctor().getName()
                 + " Nurse Id:" + patients.get(0).getNurse().getName() + " " + patients.get(0).getChart().getDiagnosis()
                 + " " + patients.get(0).getInsurance().getName());
@@ -111,7 +111,7 @@ public class Main {
         Doctor test = new Doctor(4);
         test.setName("Jimmy");
         test.setPosition("Physical Therapist");
-        //stAXService.updateDoctorInXML(test, DOC_XML_FILE);
+        stAXService.updateDoctorInXML(test, DOC_XML_FILE);
 
         MedicalBill medicalBill = medicalBillService.getMedicalBillInDB(1);
         Treatment treatment = new Treatment(1, "Surgery");
