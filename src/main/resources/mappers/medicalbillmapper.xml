@@ -2,37 +2,43 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.solvd.hospital.db.mapper.MedicalBillMapper">
-    <select id="selectMedicalBillById" resultMap="medicalBillResultMap">
-        SELECT MB.id as medical_bill_id, MB.amountDue as medical_bill_amount,
-        P.id as patient_id, P.name as patient_name, P.address as patient_address,
-        P.phoneNumber as patient_number, D.name as doc_name, D.employeeId as doc_id, D.position as doc_position,
-        Dep.id as dep_id, Dep.name as dep_name, N.name as nur_name, N.employeeId as nur_id,
-        N.position as nur_position, I.id as insurance_id, I.name as insurance_name,
-        PMC.reportId as pmc_id, PMC.diagnosis as pmc_diagnosis, PMC.dateVisted as pmc_date
-        FROM MedicalBill MB
-        JOIN Patient P ON MB.Patient_id = P.id
-        JOIN Doctor D ON P.Doctor_employeeId = D.employeeId
-        JOIN Nurse N ON P.Nurse_employeeId = N.employeeId
-        JOIN Departments Dep ON D.Departments_id = Dep.id OR N.Departments_id = Dep.id
-        JOIN Insurance I ON P.Insurance_id = I.id
-        JOIN PatientMedicalChart PMC ON PMC.reportId = P.PatientMedicalChart_reportId
-        WHERE MB.id=#{id}
+<mapper namespace="com.solvd.hospital.dao.IMedicalBillDao">
+    <sql id="medicalBillBody">
+        MedicalBill.id as medical_bill_id,
+        MedicalBill.amountDue as medical_bill_amount
+    </sql>
+    <select id="getById" resultMap="medicalBillResultMap">
+        SELECT
+        <include refid="medicalBillBody"/>,
+        <include refid="com.solvd.hospital.dao.IPatientDao.patientBody"/>,
+        <include refid="com.solvd.hospital.dao.IDoctorDao.doctorBody"/>,
+        <include refid="com.solvd.hospital.dao.INurseDao.nurseBody"/>,
+        <include refid="com.solvd.hospital.dao.IDepartmentDao.departmentBody"/>,
+        <include refid="com.solvd.hospital.dao.IInsuranceDao.insuranceBody"/>,
+        <include refid="com.solvd.hospital.dao.IPatientMedicalChartDao.patientMedicalChartBody"/>
+        FROM MedicalBill
+        JOIN Patient ON MedicalBill.Patient_id = Patient.id
+        JOIN Doctor ON Patient.Doctor_employeeId = Doctor.employeeId
+        JOIN Nurse ON Patient.Nurse_employeeId = Nurse.employeeId
+        JOIN Departments ON Doctor.Departments_id = Departments.id OR Nurse.Departments_id = Departments.id
+        JOIN Insurance ON Patient.Insurance_id = Insurance.id
+        JOIN PatientMedicalChart ON PatientMedicalChart.reportId = Patient.PatientMedicalChart_reportId
+        WHERE MedicalBill.id=#{id}
     </select>
-    <update id="updateMedicalBill">
+    <update id="update">
         UPDATE MedicalBill SET amountDue=#{amountDue} WHERE id=#{id}
     </update>
-    <delete id="deleteMedicalBillById">
+    <delete id="deleteById">
         DELETE FROM MedicalBill WHERE id = #{id}
     </delete>
-    <insert id="saveMedicalBillToDB">
+    <insert id="insert">
         INSERT INTO MedicalBill (amountDue, Patient_id, Insurance_id, id)
         VALUES (#{amountDue} , #{patient.id}, #{insurance.id}, #{id})
     </insert>
     <resultMap id="medicalBillResultMap" type="com.solvd.hospital.model.patient.MedicalBill">
         <id property="id" column="medical_bill_id"/>
         <result property="amountDue" column="medical_bill_amount"/>
-        <collection property="patient" resultMap="com.solvd.hospital.db.mapper.PatientMapper.patientResultMap"/>
-        <collection property="insurance" resultMap="com.solvd.hospital.db.mappers.InsuranceMapper.insuranceResultMap"/>
+        <collection property="patient" resultMap="com.solvd.hospital.dao.IPatientDao.patientResultMap"/>
+        <collection property="insurance" resultMap="com.solvd.hospital.dao.IInsuranceDao.insuranceResultMap"/>
     </resultMap>
 </mapper>

@@ -1,37 +1,24 @@
 package com.solvd.hospital.service.mybatisimpl;
 
+import com.solvd.hospital.dao.IPatientMedicalChartDao;
 import com.solvd.hospital.model.patient.PatientMedicalChart;
 import com.solvd.hospital.service.IPatientMedicalChartService;
 import com.solvd.hospital.util.IdException;
-import com.solvd.hospital.util.PropertiesUtil;
-import org.apache.ibatis.io.Resources;
+import com.solvd.hospital.util.SqlSessionUtil;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 public class PatientMedicalChartService implements IPatientMedicalChartService {
-    private final static Logger LOGGER = LogManager.getLogger(PatientMedicalChart.class);
-    private final static String MYBATIS_CONFIG = "mybatis_config.xml";
-    private final static String PMC_SAVE = "com.solvd.hospital.db.mappers.PatientMedicalChartMapper.savePatientMedicalChartToDB";
-    private final static String PMC_UPDATE = "com.solvd.hospital.db.mappers.PatientMedicalChartMapper.updatePatientMedicalChart";
-    private final static String PMC_DELETE = "com.solvd.hospital.db.mappers.PatientMedicalChartMapper.deletePatientMedicalChartById";
-    private final static String PMC_GET = "com.solvd.hospital.db.mappers.PatientMedicalChartMapper.selectPatientMedicalChartById";
+    private final static Logger LOGGER = LogManager.getLogger(PatientMedicalChartService.class);
     @Override
     public void savePatientMedicalChartInDB(PatientMedicalChart pmc) {
         if(pmc != null) {
-            Properties prop = PropertiesUtil.getProperties();
-            try (InputStream stream = Resources.getResourceAsStream(MYBATIS_CONFIG);
-                 SqlSession session = new SqlSessionFactoryBuilder().build(stream, prop).openSession();) {
-                session.selectOne(PMC_SAVE, pmc);
+            try(SqlSession session = SqlSessionUtil.getSession().openSession();) {
+                IPatientMedicalChartDao patientMedicalChartDao = session.getMapper(IPatientMedicalChartDao.class);
+                patientMedicalChartDao.insert(pmc);
                 session.commit();
-            } catch (IOException e) {
-                LOGGER.error("File Not Found");
-                throw new RuntimeException(e);
             }
         }else{
             LOGGER.error("PatientMedicalChart object is null.");
@@ -42,14 +29,10 @@ public class PatientMedicalChartService implements IPatientMedicalChartService {
     @Override
     public void deletePatientMedicalChartInDB(int id) {
         if(id>=1) {
-            Properties prop = PropertiesUtil.getProperties();
-            try (InputStream stream = Resources.getResourceAsStream(MYBATIS_CONFIG);
-                 SqlSession session = new SqlSessionFactoryBuilder().build(stream, prop).openSession();) {
-                session.selectOne(PMC_DELETE, id);
+            try(SqlSession session = SqlSessionUtil.getSession().openSession();) {
+                IPatientMedicalChartDao patientMedicalChartDao = session.getMapper(IPatientMedicalChartDao.class);
+                patientMedicalChartDao.deleteById(id);
                 session.commit();
-            } catch (IOException e) {
-                LOGGER.error("File Not Found");
-                throw new RuntimeException(e);
             }
         }else{
             LOGGER.error("Invalid id was entered.");
@@ -60,13 +43,9 @@ public class PatientMedicalChartService implements IPatientMedicalChartService {
     @Override
     public PatientMedicalChart getPatientMedicalChartInDB(int id) {
         if(id>=1) {
-            Properties prop = PropertiesUtil.getProperties();
-            try (InputStream stream = Resources.getResourceAsStream(MYBATIS_CONFIG);
-                 SqlSession session = new SqlSessionFactoryBuilder().build(stream, prop).openSession();) {
-                return session.selectOne(PMC_GET, id);
-            } catch (IOException e) {
-                LOGGER.error("File Not Found");
-                throw new RuntimeException(e);
+            try(SqlSession session = SqlSessionUtil.getSession().openSession();) {
+                IPatientMedicalChartDao patientMedicalChartDao = session.getMapper(IPatientMedicalChartDao.class);
+                return patientMedicalChartDao.getById(id);
             }
         }else{
             LOGGER.error("Invalid id was entered.");
@@ -77,14 +56,10 @@ public class PatientMedicalChartService implements IPatientMedicalChartService {
     @Override
     public void updatePatientMedicalChartInDB(PatientMedicalChart pmc) {
         if(pmc != null) {
-            Properties prop = PropertiesUtil.getProperties();
-            try (InputStream stream = Resources.getResourceAsStream(MYBATIS_CONFIG);
-                 SqlSession session = new SqlSessionFactoryBuilder().build(stream, prop).openSession();) {
-                session.selectOne(PMC_UPDATE, pmc);
+            try(SqlSession session = SqlSessionUtil.getSession().openSession();) {
+                IPatientMedicalChartDao patientMedicalChartDao = session.getMapper(IPatientMedicalChartDao.class);
+                patientMedicalChartDao.update(pmc);
                 session.commit();
-            } catch (IOException e) {
-                LOGGER.error("File Not Found");
-                throw new RuntimeException(e);
             }
         }else{
             LOGGER.error("PatientMedicalChart object is null.");

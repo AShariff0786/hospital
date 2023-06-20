@@ -2,28 +2,36 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.solvd.hospital.db.mapper.PatientMapper">
-    <select id="selectPatientById" resultMap="patientResultMap">
-        SELECT P.id as patient_id, P.name as patient_name, P.address as patient_address,
-        P.phoneNumber as patient_number, D.name as doc_name, D.employeeId as doc_id, D.position as doc_position,
-        Dep.id as dep_id, Dep.name as dep_name, N.name as nur_name, N.employeeId as nur_id,
-        N.position as nur_position, I.id as insurance_id, I.name as insurance_name,
-        PMC.reportId as pmc_id, PMC.diagnosis as pmc_diagnosis, PMC.dateVisted as pmc_date
+<mapper namespace="com.solvd.hospital.dao.IPatientDao">
+    <sql id="patientBody">
+        Patient.id as patient_id,
+        Patient.name as patient_name,
+        Patient.address as patient_address,
+        Patient.phoneNumber as patient_number
+    </sql>
+    <select id="getById" resultMap="patientResultMap">
+        SELECT
+        <include refid="patientBody"/>,
+        <include refid="com.solvd.hospital.dao.IDoctorDao.doctorBody"/>,
+        <include refid="com.solvd.hospital.dao.IDepartmentDao.departmentBody"/>,
+        <include refid="com.solvd.hospital.dao.INurseDao.nurseBody"/>,
+        <include refid="com.solvd.hospital.dao.IInsuranceDao.insuranceBody"/>,
+        <include refid="com.solvd.hospital.dao.IPatientMedicalChartDao.patientMedicalChartBody"/>
         FROM Patient P
-        JOIN Doctor D ON P.Doctor_employeeId = D.employeeId
-        JOIN Nurse N ON P.Nurse_employeeId = N.employeeId
-        JOIN Departments Dep ON D.Departments_id = Dep.id OR N.Departments_id = Dep.id
-        JOIN Insurance I ON P.Insurance_id = I.id
-        JOIN PatientMedicalChart PMC ON PMC.reportId = P.PatientMedicalChart_reportId
-        WHERE P.id= #{id}
+        JOIN Doctor ON Patient.Doctor_employeeId = Doctor.employeeId
+        JOIN Nurse ON Patient.Nurse_employeeId = Nurse.employeeId
+        JOIN Departments ON Doctor.Departments_id = Departments.id OR Nurse.Departments_id = Departments.id
+        JOIN Insurance ON Patient.Insurance_id = Insurance.id
+        JOIN PatientMedicalChart ON PatientMedicalChart.reportId = Patient.PatientMedicalChart_reportId
+        WHERE Patient.id= #{id}
     </select>
-    <update id="updatePatient">
+    <update id="update">
         UPDATE Patient SET name=#{name}, address=#{address}, phoneNumber=#{phoneNumber} WHERE id=#{id}
     </update>
-    <delete id="deletePatientById">
+    <delete id="deleteById">
         DELETE FROM Patient WHERE id = #{id}
     </delete>
-    <insert id="savePatientToDB">
+    <insert id="insert">
         INSERT INTO Patient (name, Doctor_employeeId, PatientMedicalChart_reportId, Nurse_employeeId, Insurance_id, id, address, phoneNumber)
         VALUES (#{name}, #{doctor.id}, #{chart.id}, #{nurse.id}, #{insurance.id}, #{id}, #{address}, #{phoneNumber})
     </insert>
@@ -32,9 +40,9 @@
         <result property="name" column="patient_name"/>
         <result property="address" column="patient_address"/>
         <result property="phoneNumber" column="patient_number"/>
-        <collection property="doctor" resultMap="com.solvd.hospital.db.mapper.DoctorMapper.doctorResultMap"/>
-        <collection property="nurse" resultMap="com.solvd.hospital.db.mapper.NurseMapper.nurseResultMap"/>
-        <collection property="insurance" resultMap="com.solvd.hospital.db.mappers.InsuranceMapper.insuranceResultMap"/>
-        <collection property="chart" resultMap="com.solvd.hospital.db.mappers.PatientMedicalChartMapper.pmcResultMap"/>
+        <collection property="doctor" resultMap="com.solvd.hospital.dao.IDoctorDao.doctorResultMap"/>
+        <collection property="nurse" resultMap="com.solvd.hospital.dao.INurseDao.nurseResultMap"/>
+        <collection property="insurance" resultMap="com.solvd.hospital.dao.IInsuranceDao.insuranceResultMap"/>
+        <collection property="chart" resultMap="com.solvd.hospital.dao.IPatientMedicalChartDao.pmcResultMap"/>
     </resultMap>
 </mapper>

@@ -1,27 +1,33 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.solvd.hospital.db.mapper.AppointmentMapper">
-    <select id="selectAppointmentById" resultMap="appointmentResultMap">
-        SELECT A.id as appt_id, A.date as appt_date, A.time as appt_time,
-        P.id as patient_id, P.name as patient_name, P.address as patient_address,
-        P.phoneNumber as patient_number, D.name as doc_name, D.employeeId as doc_id, D.position as doc_position,
-        Dep.id as dep_id, Dep.name as dep_name, N.name as nur_name, N.employeeId as nur_id,
-        N.position as nur_position
-        FROM Appointment A
-        JOIN Patient P ON A.Patient_id = P.id
-        JOIN Doctor D ON A.Doctor_employeeId = D.employeeId
-        JOIN Nurse N ON A.Nurse_employeeID = N.employeeId
-        JOIN Departments Dep ON D.Departments_id = Dep.id OR N.Departments_id = Dep.id
-        WHERE A.id= #{id}
+<mapper namespace="com.solvd.hospital.dao.IAppointmentDao">
+    <sql id="appointmentBody">
+        Appointment.id as appt_id,
+        Appointment.date as appt_date,
+        Appointment.time as appt_time
+    </sql>
+    <select id="getById" resultMap="appointmentResultMap">
+        SELECT
+        <include refid="appointmentBody"/>,
+        <include refid="com.solvd.hospital.dao.IPatientDao.patientBody"/>,
+        <include refid="com.solvd.hospital.dao.IDoctorDao.doctorBody"/>,
+        <include refid="com.solvd.hospital.dao.INurseDao.nurseBody"/>,
+        <include refid="com.solvd.hospital.dao.IDepartmentDao.departmentBody"/>
+        FROM Appointment
+        JOIN Patient ON Appointment.Patient_id = Patient.id
+        JOIN Doctor ON Appointment.Doctor_employeeId = Doctor.employeeId
+        JOIN Nurse ON Appointment.Nurse_employeeID = Nurse.employeeId
+        JOIN Departments ON Doctor.Departments_id = Departments.id OR Nurse.Departments_id = Departments.id
+        WHERE Appointment.id= #{id}
     </select>
-    <update id="updateAppointment">
+    <update id="update">
         UPDATE Appointment SET date=#{date}, time=#{time} WHERE id=#{id}
     </update>
-    <delete id="deleteAppointmentById">
+    <delete id="deleteById">
         DELETE FROM Appointment WHERE id = #{id}
     </delete>
-    <insert id="saveAppointmentToDB" >
+    <insert id="insert" >
         INSERT INTO Appointment (date, time, Patient_id, Doctor_employeeId, Nurse_employeeId, id)
         VALUES (#{date},#{time},#{patient.id}, #{doctor.id}, #{nurse.id}, #{id})
     </insert>
@@ -29,8 +35,8 @@
         <id property="id" column="appt_id"/>
         <result property="date" javaType="java.util.Date" column="appt_date"/>
         <result property="time" column="appt_time"/>
-        <collection property="doctor" resultMap="com.solvd.hospital.db.mapper.DoctorMapper.doctorResultMap"/>
-        <collection property="nurse" resultMap="com.solvd.hospital.db.mapper.NurseMapper.nurseResultMap"/>
-        <collection property="patient" resultMap="com.solvd.hospital.db.mapper.PatientMapper.patientResultMap"/>
+        <collection property="doctor" resultMap="com.solvd.hospital.dao.IDoctorDao.doctorResultMap"/>
+        <collection property="nurse" resultMap="com.solvd.hospital.dao.INurseDao.nurseResultMap"/>
+        <collection property="patient" resultMap="com.solvd.hospital.dao.IPatientDao.patientResultMap"/>
     </resultMap>
 </mapper>

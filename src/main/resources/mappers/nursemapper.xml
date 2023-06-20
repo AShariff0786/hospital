@@ -2,21 +2,27 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.solvd.hospital.db.mapper.NurseMapper">
-    <select id="selectNurseById" resultMap="nurseResultMap">
-        SELECT N.name as nur_name, N.employeeId as nur_id, N.position as nur_position,
-        Dep.id as dep_id, Dep.name as dep_name
-        FROM Nurse N
-        JOIN Departments Dep ON N.Departments_id = Dep.id
-        WHERE N.employeeId = #{id}
+<mapper namespace="com.solvd.hospital.dao.INurseDao">
+    <sql id="nurseBody">
+        Nurse.name as nur_name,
+        Nurse.employeeId as nur_id,
+        Nurse.position as nur_position
+    </sql>
+    <select id="getById" resultMap="nurseResultMap">
+        SELECT
+        <include refid="nurseBody"/>,
+        <include refid="com.solvd.hospital.dao.IDepartmentDao.departmentBody"/>
+        FROM Nurse
+        JOIN Departments ON Nurse.Departments_id = Departments.id
+        WHERE Nurse.employeeId = #{id}
     </select>
-    <update id="updateNurse">
+    <update id="update">
         UPDATE Nurse SET name=#{name}, position=#{position} WHERE employeeId=#{id}
     </update>
-    <delete id="deleteNurseById">
+    <delete id="deleteById">
         DELETE FROM nurse WHERE employeeId = #{id}
     </delete>
-    <insert id="saveNurseToDB">
+    <insert id="insert">
         INSERT INTO Nurse (employeeId, name, position, Departments_id)
         VALUES (#{id}, #{name} , #{position} ,#{department.id})
     </insert>
@@ -24,6 +30,6 @@
         <id property="id" column="nur_id"/>
         <result property="name" column="nur_name"/>
         <result property="position" column="nur_position"/>
-        <collection property="department" resultMap="com.solvd.hospital.db.mappers.DepartmentMapper.DepResultMap"/>
+        <collection property="department" resultMap="com.solvd.hospital.dao.IDepartmentDao.DepResultMap"/>
     </resultMap>
 </mapper>
